@@ -1,98 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Домашняя страница Филата Астахова. Frontend-разработчик, Центральный Банк, Музыкант в filatique, phlegmatix project, Jimmy Hydroponic, ph1l74. Фотограф. Цифровая фотография, пленочная фотография, мобильная фотография.">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
-        integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-55010046-1"></script>
-    <link href="https://fonts.googleapis.com/css?family=Manrope&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Manrope&display=swap" rel="stylesheet">
-
-    <title>Filat Astakhov</title>
-</head>
-
-<body>
-    <div class="bg-layout"></div>
-    <header>
-        <div class="header-links">
-            <ul class="header-links-list">
-                <li class="header-links-elem">
-                    <a href="http://blog.ph1l74.com/">Blog</a>
-                </li>
-                <li class="header-links-elem">
-                    <a href="https://ph1l74.github.io/">Portfolio</a>
-                </li>
-                <li class="header-links-elem">
-                    <a href="mailto:astakhovfilat@gmail.com">Contact</a>
-                </li>
-                <li class="header-links-elem">
-                    <a href="http://github.com/ph1l74"><i class="fab fa-github"></i>Github</a>
-                </li>
-            </ul>
-        </div>
-    </header>
-    <main>
-        <div class="content">
-            <div class="greetings">
-                <div class="heading">
-                    Filat Astakhov
-                </div>
-                <div class="description">
-                    Web-developer <i class="fas fa-slash slash"></i> Photographer <i class="fas fa-slash slash"></i>
-                    Musician
-                </div>
-            </div>
-            <div class="contact hidden">
-                <div class="contact-links">
-                    <ul class="contact-links-list">
-                        <li class="contact-links-elem"><a href="mailto:"><i class="far fa-envelope"></i></a></li>
-                        <li class="contact-links-elem"><a href=""><i class="fab fa-telegram-plane"></i></a></li>
-                        <li class="contact-links-elem"><a href=""><i class="fab fa-facebook-f"></i></a></li>
-                        <li class="contact-links-elem"><a href=""><i class="fab fa-linkedin-in"></i></a></li>
-                    </ul>
-
-                </div>
-            </div>
-        </div>
-    </main>
-    <footer>
-        <div class="footer-links">
-            <ul class="footer-links-list">
-                <li class="footer-links-elem">
-                    <a href="https://ph1l74.github.io/si/" target="_blank">СПОСИ</a>
-                </li>
-                <li class="footer-links-elem">
-                    <a href="https://ph1l74.github.io/art-guide/" target="_blank">Art-Guide</a>
-                </li>
-                <li class="footer-links-elem">
-                    <a href="https://ph1l74.github.io/cpg/" target="_blank">Poster-Generator</a>
-                </li>
-                <!-- <li class="footer-links-elem">
-                    <a href="https://vk2tumblr.herokuapp.com/index.html" target="_blank">vk2tumblr</a>
-                </li> -->
-                <li class="footer-links-elem">
-                    <a href="https://ph1l74.github.io/2019/" target="_blank">TOP-2019</a>
-                </li>
-            </ul>
-        </div>
-
-    </footer>
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-55010046-1');
-    </script>
-
-</body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ph1l74.com</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
