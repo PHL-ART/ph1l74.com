@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.2] - 2025-10-11
+
+### Добавлено
+- Docker поддержка с multi-stage build
+- `Dockerfile` для контейнеризации приложения
+- `nginx.conf` с оптимизацией для React SPA
+- `docker-compose.yml` с полной интеграцией Traefik (SSL, redirects, headers)
+- `docker-compose.local.yml` для локальной разработки
+- `.dockerignore` для оптимизации размера образа
+- Health check endpoint `/health` в Nginx
+- Gzip compression для статических файлов
+- Кэширование статических ресурсов
+- Security headers в Nginx конфигурации
+- Документация по Docker и Traefik в README
+
+### Особенности Docker образа
+- Multi-stage build: Node.js (builder) + Nginx Alpine (runner)
+- Unprivileged Nginx (порт 8080)
+- Автоматическая конфигурация с Traefik labels
+- Поддержка Let's Encrypt для SSL
+- Оптимизированный размер финального образа
+
 ## [1.0.1] - 2025-10-11
 
 ### Исправлено

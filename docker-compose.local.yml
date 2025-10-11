@@ -1,0 +1,26 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: 22-alpine
+        NGINX_VERSION: alpine3.20
+    container_name: ph1l74-frontend-local
+    restart: unless-stopped
+    
+    # Port mapping for local access
+    ports:
+      - "3000:8080"
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    
+    environment:
+      - NODE_ENV=production
+

@@ -1,0 +1,71 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: 22-alpine
+        NGINX_VERSION: alpine3.20
+    container_name: ph1l74-frontend
+    restart: unless-stopped
+    
+    # Expose port for direct access (optional, mainly for Traefik)
+    ports:
+      - "8080:8080"
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    
+    # Networks for Traefik
+    networks:
+      - traefik-network
+    
+    # Traefik labels for automatic configuration
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+      
+      # HTTP router
+      - "traefik.http.routers.ph1l74-frontend.rule=Host(`ph1l74.com`) || Host(`www.ph1l74.com`)"
+      - "traefik.http.routers.ph1l74-frontend.entrypoints=web"
+      
+      # HTTPS router (if using SSL)
+      - "traefik.http.routers.ph1l74-frontend-secure.rule=Host(`ph1l74.com`) || Host(`www.ph1l74.com`)"
+      - "traefik.http.routers.ph1l74-frontend-secure.entrypoints=websecure"
+      - "traefik.http.routers.ph1l74-frontend-secure.tls=true"
+      - "traefik.http.routers.ph1l74-frontend-secure.tls.certresolver=letsencrypt"
+      
+      # Middleware for HTTPS redirect
+      - "traefik.http.middlewares.ph1l74-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.ph1l74-redirect.redirectscheme.permanent=true"
+      - "traefik.http.routers.ph1l74-frontend.middlewares=ph1l74-redirect"
+      
+      # Service configuration
+      - "traefik.http.services.ph1l74-frontend.loadbalancer.server.port=8080"
+      
+      # Security headers middleware (optional but recommended)
+      - "traefik.http.middlewares.ph1l74-headers.headers.sslredirect=true"
+      - "traefik.http.middlewares.ph1l74-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.ph1l74-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.ph1l74-headers.headers.stsPreload=true"
+      - "traefik.http.routers.ph1l74-frontend-secure.middlewares=ph1l74-headers"
+      
+      # WWW to non-WWW redirect (optional)
+      - "traefik.http.middlewares.ph1l74-www-redirect.redirectregex.regex=^https://www\\.(.+)"
+      - "traefik.http.middlewares.ph1l74-www-redirect.redirectregex.replacement=https://$$1"
+      - "traefik.http.middlewares.ph1l74-www-redirect.redirectregex.permanent=true"
+    
+    # Environment variables (if needed)
+    environment:
+      - NODE_ENV=production
+
+networks:
+  traefik-network:
+    external: true
+    name: traefik-network
+

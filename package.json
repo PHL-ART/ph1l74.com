@@ -1,7 +1,7 @@
 {
   "name": "ph1l74.com",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.2",
   "type": "module",
   "description": "Interactive landing page with Aceternity UI components",
   "author": "ph1l74",
@@ -9,7 +9,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker:local": "docker-compose -f docker-compose.local.yml up --build",
+    "docker:local:down": "docker-compose -f docker-compose.local.yml down",
+    "docker:prod": "docker-compose up -d --build",
+    "docker:logs": "docker-compose logs -f"
   },
   "dependencies": {
     "-": "^0.0.1",
