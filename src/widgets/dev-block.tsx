@@ -17,9 +17,9 @@ export const DevBlock: React.FC<DevBlockProps> = ({ onClick, className }) => {
       onClick={onClick}
     >
       <BackgroundRippleEffect
-        rows={8}
-        cols={27}
-        cellSize={56}
+        rows={10}
+        cols={50}
+        cellSize={40}
         className="h-full w-full"
       >
         <div className="flex items-center justify-center h-full">

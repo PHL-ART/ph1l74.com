@@ -27,6 +27,9 @@ export const ArtBlock: React.FC<ArtBlockProps> = ({ onClick, className }) => {
         interactive={true}
         containerClassName="h-full w-full"
         className="flex items-center justify-center h-full"
+        blendingValue="soft-light"
+        pointerColor="140, 100, 255"
+        size="150%"
       >
         <h1 className="relative z-20 text-[12rem] font-bold text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all hover:scale-110 select-none">
           ART
