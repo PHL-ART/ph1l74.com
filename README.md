@@ -10,34 +10,40 @@
 
 ## Технологии
 
+- **Next.js 15** - React framework с App Router
 - **React 19** - библиотека для создания пользовательских интерфейсов
 - **TypeScript** - типизированный JavaScript
-- **Vite 7** - быстрый сборщик и dev сервер
-- **Tailwind CSS v4** - utility-first CSS фреймворк (с @tailwindcss/vite плагином)
+- **Tailwind CSS v4** - utility-first CSS фреймворк (с @tailwindcss/postcss)
 - **Aceternity UI** - компоненты для фоновых эффектов
 - **FSD** (Feature-Sliced Design) - архитектура приложения
 
-## Структура проекта (FSD)
+## Структура проекта (FSD + Next.js App Router)
 
 ```
+app/                    # Next.js App Router
+├── api/               # API routes
+│   └── health/        # Health check endpoint
+│       └── route.ts
+├── layout.tsx         # Root layout
+├── page.tsx           # Home page
+└── globals.css        # Global styles с Tailwind CSS v4
+
 src/
-├── shared/              # Переиспользуемые модули
-│   ├── ui/             # UI компоненты
+├── shared/            # Переиспользуемые модули
+│   ├── ui/           # UI компоненты
 │   │   ├── background-gradient-animation.tsx
 │   │   ├── background-ripple-effect.tsx
 │   │   └── index.ts
-│   ├── lib/            # Утилиты
+│   ├── lib/          # Утилиты
 │   │   ├── utils.ts
 │   │   └── index.ts
-│   └── config/         # Конфигурация и константы
+│   └── config/       # Конфигурация и константы
 │       └── constants.ts
-├── widgets/            # Композитные блоки
+├── widgets/          # Композитные блоки
 │   ├── art-block.tsx
 │   └── dev-block.tsx
-├── pages/              # Страницы приложения
-│   └── home-page.tsx
-├── App.tsx            # Корневой компонент
-└── main.tsx           # Точка входа
+└── pages/            # Страницы (FSD слой)
+    └── home-page.tsx
 ```
 
 ## Установка и запуск
@@ -59,7 +65,7 @@ npm install
 npm run dev
 ```
 
-Приложение будет доступно по адресу http://localhost:5173/
+Приложение будет доступно по адресу http://localhost:3000/
 
 ### Сборка для продакшена
 
@@ -110,11 +116,18 @@ export const EXTERNAL_LINKS = {
 
 ### Кастомизация цветов и анимаций
 
-Настройки анимаций находятся в `src/index.css`:
-- В блоке `@theme` определены CSS переменные для анимаций
+Настройки анимаций находятся в `app/globals.css`:
+- В блоке `@theme inline` определены CSS переменные для анимаций
 - В `@keyframes` блоках описаны сами анимации
 
-Tailwind CSS v4 использует новый подход с `@import "tailwindcss"` и `@theme` вместо традиционных директив `@tailwind`.
+Tailwind CSS v4 использует новый подход с `@import "tailwindcss"` и `@theme inline` вместо традиционных директив `@tailwind`.
+
+### Next.js конфигурация
+
+Файл `next.config.ts` настроен для:
+- Standalone output для Docker
+- Оптимизации изображений (AVIF, WebP)
+- Удаления console.log в продакшене
 
 ## Docker
 
@@ -166,15 +179,26 @@ docker-compose down
 ### Docker образ
 
 **Multi-stage build:**
-1. **Stage 1 (builder)**: Node.js для сборки приложения
-2. **Stage 2 (runner)**: Nginx Alpine для раздачи статики
+1. **Stage 1 (deps)**: Установка зависимостей
+2. **Stage 2 (builder)**: Сборка Next.js приложения
+3. **Stage 3 (runner)**: Production сервер
 
 **Особенности:**
-- Используется unprivileged nginx (работает на порту 8080)
-- Оптимизирован размер образа
-- Включены health checks
-- Настроен gzip compression
-- Кэширование статических ресурсов
+- Next.js standalone output для минимального размера
+- Non-root пользователь (nextjs:nodejs)
+- Работает на порту 3000
+- Health check через API route `/api/health`
+- Оптимизированный размер образа (~150MB)
+
+## Troubleshooting
+
+Если возникли проблемы при разработке или деплое, см. [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+
+Основные решения:
+- **404 на localhost:3000** - удалить конфликтующие директории `app/` и `src/pages/`
+- **Hydration mismatch** - добавить `suppressHydrationWarning` в layout
+- **Viewport warning** - использовать отдельный экспорт `viewport`
+- **Can't resolve 'tw-animate-css'** - удалить несуществующие пакеты из `globals.css`
 
 ## Лицензия
 

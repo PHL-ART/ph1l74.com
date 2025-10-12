@@ -1,49 +1,73 @@
 # =========================================
-# Stage 1: Build the React Application
+# Stage 1: Install Dependencies
 # =========================================
 ARG NODE_VERSION=22-alpine
-ARG NGINX_VERSION=alpine3.20
 
-FROM node:${NODE_VERSION} AS builder
+FROM node:${NODE_VERSION} AS deps
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files for dependency installation
-COPY package.json package-lock.json ./
+# Copy package files
+COPY package.json package-lock.json* ./
 
-# Install dependencies with caching
-RUN --mount=type=cache,target=/root/.npm \
-    npm ci --legacy-peer-deps
+# Install dependencies
+RUN npm ci
+
+# =========================================
+# Stage 2: Build the Next.js Application
+# =========================================
+FROM node:${NODE_VERSION} AS builder
+
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
 
 # Copy source code
 COPY . .
 
-# Build the application
+# Set environment for build
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Build Next.js app
 RUN npm run build
 
 # =========================================
-# Stage 2: Serve with Nginx
+# Stage 3: Production Runner
 # =========================================
-FROM nginxinc/nginx-unprivileged:${NGINX_VERSION} AS runner
+FROM node:${NODE_VERSION} AS runner
 
-# Use non-root user for security
-USER nginx
+WORKDIR /app
 
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Set environment
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy built files from builder stage
-COPY --chown=nginx:nginx --from=builder /app/dist /usr/share/nginx/html
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
-# Expose port 8080 (Nginx unprivileged uses 8080 instead of 80)
-EXPOSE 8080
+# Copy public assets
+COPY --from=builder /app/public ./public
+
+# Copy Next.js build output
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Switch to non-root user
+USER nextjs
+
+# Expose port 3000
+EXPOSE 3000
+
+# Set hostname
+ENV HOSTNAME="0.0.0.0"
+ENV PORT=3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))" || exit 1
 
-# Start Nginx
-ENTRYPOINT ["nginx", "-c", "/etc/nginx/nginx.conf"]
-CMD ["-g", "daemon off;"]
+# Start Next.js
+CMD ["node", "server.js"]
 

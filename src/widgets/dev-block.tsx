@@ -1,5 +1,4 @@
-import React from "react";
-import { BackgroundRippleEffect } from "@/shared/ui";
+import { DottedGlowBackground } from "@/shared/ui";
 import { cn } from "@/shared/lib";
 
 interface DevBlockProps {
@@ -7,7 +6,7 @@ interface DevBlockProps {
   className?: string;
 }
 
-export const DevBlock: React.FC<DevBlockProps> = ({ onClick, className }) => {
+export const DevBlock = ({ onClick, className }: DevBlockProps) => {
   return (
     <div
       className={cn(
@@ -16,18 +15,25 @@ export const DevBlock: React.FC<DevBlockProps> = ({ onClick, className }) => {
       )}
       onClick={onClick}
     >
-      <BackgroundRippleEffect
-        rows={10}
-        cols={50}
-        cellSize={40}
-        className="h-full w-full"
+      <DottedGlowBackground
+        className="absolute inset-0 z-0"
+        containerClassName="h-full w-full"
+        opacity={0.8}
+        gap={20}
+        radius={1.5}
+        colorLightVar="--color-neutral-500"
+        glowColorLightVar="--color-neutral-600"
+        colorDarkVar="--color-neutral-500"
+        glowColorDarkVar="--color-sky-800"
+        backgroundOpacity={0}
+        speedMin={0.3}
+        speedMax={1.6}
+        speedScale={1}
       >
-        <div className="flex items-center justify-center h-full">
-          <h1 className="text-[12rem] font-bold text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all hover:scale-110 select-none">
-            DEV
-          </h1>
-        </div>
-      </BackgroundRippleEffect>
+        <h1 className="text-[12rem] font-bold text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all hover:scale-110 select-none">
+          DEV
+        </h1>
+      </DottedGlowBackground>
     </div>
   );
 };

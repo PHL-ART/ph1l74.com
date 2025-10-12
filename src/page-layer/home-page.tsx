@@ -1,8 +1,9 @@
-import React from "react";
+'use client';
+
 import { ArtBlock, DevBlock } from "@/widgets";
 import { EXTERNAL_LINKS } from "@/shared/config/constants";
 
-export const HomePage: React.FC = () => {
+export const HomePage = () => {
   const handleArtClick = () => {
     window.location.href = EXTERNAL_LINKS.ART;
   };

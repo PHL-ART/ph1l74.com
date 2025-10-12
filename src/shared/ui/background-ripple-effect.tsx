@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useMemo } from "react";
+'use client';
+
+import { useState, useCallback, useMemo } from "react";
 import { cn } from "@/shared/lib";
 
 interface BackgroundRippleEffectProps {

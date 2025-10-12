@@ -1,4 +1,3 @@
-import React from "react";
 import { BackgroundGradientAnimation } from "@/shared/ui";
 import { cn } from "@/shared/lib";
 
@@ -7,7 +6,7 @@ interface ArtBlockProps {
   className?: string;
 }
 
-export const ArtBlock: React.FC<ArtBlockProps> = ({ onClick, className }) => {
+export const ArtBlock = ({ onClick, className }: ArtBlockProps) => {
   return (
     <div
       className={cn(

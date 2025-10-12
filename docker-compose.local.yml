@@ -5,22 +5,23 @@ services:
       dockerfile: Dockerfile
       args:
         NODE_VERSION: 22-alpine
-        NGINX_VERSION: alpine3.20
     container_name: ph1l74-frontend-local
     restart: unless-stopped
     
     # Port mapping for local access
     ports:
-      - "3000:8080"
+      - "3000:3000"
     
     # Health check
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/api/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))\""]
       interval: 30s
       timeout: 3s
       retries: 3
-      start_period: 5s
+      start_period: 10s
     
     environment:
       - NODE_ENV=production
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
 
