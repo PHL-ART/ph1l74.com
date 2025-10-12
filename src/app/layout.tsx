@@ -4,8 +4,8 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'ph1l74.com',
   description: 'Interactive landing page with Aceternity UI components',
-  keywords: ['portfolio', 'art', 'dev', 'ph1l74'],
-  authors: [{ name: 'ph1l74' }],
+  keywords: ['portfolio', 'art', 'dev', 'ph1l74', 'Filat Astakhov', 'Filat', 'Astakhov','Website'],
+  authors: [{ name: 'Filat Astakhov | ph1l74' }],
 };
 
 export const viewport: Viewport = {
@@ -20,7 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }
