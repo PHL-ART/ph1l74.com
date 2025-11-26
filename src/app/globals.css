@@ -136,17 +136,13 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
-  position: fixed;
-  width: 100%;
 }
 
 html {
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
-  position: fixed;
-  width: 100%;
 }
 
 :root {
@@ -220,7 +216,7 @@ html {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
@@ -247,6 +243,17 @@ html {
   
   .cursor-square {
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="white"><rect width="16" height="16"/></svg>'), auto;
+  }
+}
+
+/* Background tuning for ART block */
+.art-block-bg {
+  --size: 150%;
+}
+
+@media (max-width: 768px) {
+  .art-block-bg {
+    --size: 260%;
   }
 }
 

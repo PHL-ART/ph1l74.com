@@ -11,7 +11,7 @@ export const GlassEllipse = ({ className }: GlassEllipseProps) => {
     <div
       className={cn(
         "absolute left-1/2 top-1/2 z-50 flex h-16 w-80 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full",
-        "bg-white/10 backdrop-blur-md border-1 border-white",
+        "bg-white/10 backdrop-blur-md",
         "shadow-2xl shadow-black/20",
         className
       )}

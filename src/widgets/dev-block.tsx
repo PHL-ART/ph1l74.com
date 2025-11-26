@@ -10,9 +10,8 @@ export const DevBlock = ({ onClick, className }: DevBlockProps) => {
   return (
     <div
       className={cn(
-        "relative h-[50vh] w-full cursor-square overflow-hidden bg-black transition-all hover:brightness-110",
-        "grayscale hover:grayscale-0 transition-all duration-500",
-        "border-t border-white/20",
+        "relative h-[50vh] w-full cursor-square overflow-hidden bg-black transition-all md:hover:brightness-110",
+        "md:grayscale md:hover:grayscale-0 transition-all duration-500",
         "flex items-center justify-center",
         className
       )}
@@ -33,7 +32,7 @@ export const DevBlock = ({ onClick, className }: DevBlockProps) => {
         speedMax={1.6}
         speedScale={1}
       >
-        <h1 className="text-[4rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] xl:text-[12rem] font-bbh-sans-bartle font-normal text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all group-hover:scale-110 select-none px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
+        <h1 className="text-[4rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] xl:text-[12rem] font-bbh-sans-bartle font-normal text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all md:group-hover:scale-110 select-none px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
           DEV
         </h1>
       </DottedGlowBackground>

@@ -1,11 +1,11 @@
 services:
-  frontend:
+  ph1l74-com:
     build:
       context: .
       dockerfile: Dockerfile
       args:
         NODE_VERSION: 22-alpine
-    container_name: ph1l74-frontend
+    container_name: ph1l74-com
     restart: unless-stopped
     
     # Expose port for direct access (optional, mainly for Traefik)
