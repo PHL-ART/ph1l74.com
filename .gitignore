@@ -35,3 +35,31 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Security - never commit these
+*.key
+*.cert
+*.pem
+*.p12
+*.pfx
+secrets.json
+.env.production
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Docker (optional - keep compose files versioned but ignore local overrides)
+docker-compose.override.yml
