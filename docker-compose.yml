@@ -8,13 +8,13 @@ services:
     container_name: ph1l74-com
     restart: unless-stopped
     
-    # Health check
+    # Health check - УПРОЩЕННЫЙ для совместимости с Alpine
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/api/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))\""]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/api/health"]
       interval: 30s
-      timeout: 3s
+      timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 40s
     
     # Networks for Traefik
     networks:
@@ -35,26 +35,37 @@ services:
       - "traefik.http.routers.ph1l74-com-secure.tls=true"
       - "traefik.http.routers.ph1l74-com-secure.tls.certresolver=letsencrypt"
       
+      # Service configuration - Next.js runs on port 3000
+      - "traefik.http.services.ph1l74-com.loadbalancer.server.port=3000"
+
       # Middleware for HTTPS redirect
       - "traefik.http.middlewares.ph1l74-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.ph1l74-redirect.redirectscheme.permanent=true"
       - "traefik.http.routers.ph1l74-com.middlewares=ph1l74-redirect"
-      
-      # Service configuration - Next.js runs on port 3000
-      - "traefik.http.services.ph1l74-com.loadbalancer.server.port=3000"
       
       # Security headers middleware (optional but recommended)
       - "traefik.http.middlewares.ph1l74-headers.headers.sslredirect=true"
       - "traefik.http.middlewares.ph1l74-headers.headers.stsSeconds=31536000"
       - "traefik.http.middlewares.ph1l74-headers.headers.stsIncludeSubdomains=true"
       - "traefik.http.middlewares.ph1l74-headers.headers.stsPreload=true"
-      - "traefik.http.routers.ph1l74-com-secure.middlewares=ph1l74-headers"
-      
+      - "traefik.http.middlewares.ph1l74-headers.headers.frameDeny=true"
+      - "traefik.http.middlewares.ph1l74-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.ph1l74-headers.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.ph1l74-headers.headers.referrerPolicy=strict-origin-when-cross-origin"
+    
+            # Middleware 3: Rate limiting
+      - "traefik.http.middlewares.ph1l74-ratelimit.ratelimit.average=100"
+      - "traefik.http.middlewares.ph1l74-ratelimit.ratelimit.burst=50"
+      - "traefik.http.middlewares.ph1l74-ratelimit.ratelimit.period=1m"
+
       # WWW to non-WWW redirect (optional)
       - "traefik.http.middlewares.ph1l74-www-redirect.redirectregex.regex=^https://www\\.(.+)"
       - "traefik.http.middlewares.ph1l74-www-redirect.redirectregex.replacement=https://$$1"
       - "traefik.http.middlewares.ph1l74-www-redirect.redirectregex.permanent=true"
     
+    # Apply all middlewares to HTTPS router (order matters!)
+      - "traefik.http.routers.ph1l74-com-secure.middlewares=ph1l74-www-redirect,ph1l74-ratelimit,ph1l74-headers"
+      
     # Environment variables
     environment:
       - NODE_ENV=production
