@@ -6,6 +6,10 @@
 .pnp.js
 .yarn/install-state.gz
 
+.claude
+.superpowers/*
+docs/superpowers
+
 # testing
 /coverage
 
