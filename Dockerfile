@@ -75,6 +75,9 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
       --header="X-Forwarded-Proto: https" \
       --spider http://127.0.0.1:3000/api/health || exit 1
 
+      # =========================================
 # Start Next.js
+# =========================================
+
 CMD ["node", "server.js"]
 
