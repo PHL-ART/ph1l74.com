@@ -68,9 +68,12 @@ EXPOSE 3000
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
 
-# Health check using wget (compatible with Alpine)
+# Health check that mimics Traefik headers to bypass host/https restrictions
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/api/health || exit 1
+    CMD wget --no-verbose --tries=1 \
+      --header="Host: ph1l74.com" \
+      --header="X-Forwarded-Proto: https" \
+      --spider http://127.0.0.1:3000/api/health || exit 1
 
 # Start Next.js
 CMD ["node", "server.js"]
