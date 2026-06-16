@@ -43,6 +43,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Install wget for healthcheck
+RUN apk add --no-cache wget
+
+
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
@@ -64,10 +68,16 @@ EXPOSE 3000
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))" || exit 1
+# Health check that mimics Traefik headers to bypass host/https restrictions
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD wget --no-verbose --tries=1 \
+      --header="Host: ph1l74.com" \
+      --header="X-Forwarded-Proto: https" \
+      --spider http://127.0.0.1:3000/api/health || exit 1
 
+      # =========================================
 # Start Next.js
+# =========================================
+
 CMD ["node", "server.js"]
 
