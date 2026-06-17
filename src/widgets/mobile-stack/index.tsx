@@ -30,12 +30,13 @@ export function MobileStack({ sections, active, translations, onSelect }: Mobile
       {/* Flex spacer pushes blocks to bottom */}
       <div style={{ flex: 1 }} />
 
-      {/* Gradient scrim + blocks */}
+      {/* Gradient scrim + blocks, padded so content clears the fixed footer */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
-          background: 'linear-gradient(to top, rgba(10,10,11,0.92), rgba(10,10,11,0))',
+          background: 'linear-gradient(to top, rgba(10,10,11,0.95) 60%, rgba(10,10,11,0))',
+          paddingBottom: 52, // clears fixed footer (~40px) + gap
         }}
       >
         {sections.map((section) => (

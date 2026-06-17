@@ -58,8 +58,6 @@ export function PortalPage() {
     music: { alias: t('sections.music.alias'), description: t('sections.music.description'), enterFull: t('sections.music.enterFull') },
   } as const;
 
-  const cur = hover ?? active;
-
   return (
     <div
       style={{
@@ -74,29 +72,6 @@ export function PortalPage() {
       <PortalCanvas ref={canvasRef as React.Ref<PortalCanvasHandle>} />
 
       <PortalHeader name={PORTAL_CONFIG.name} />
-
-      {/* Hint text — fades when anything is focused */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: isDesktop ? 112 : 'auto',
-          bottom: isDesktop ? 'auto' : 236,
-          textAlign: 'center',
-          fontFamily: 'var(--font-space-mono), monospace',
-          fontSize: 11,
-          letterSpacing: '4px',
-          color: '#5a5a64',
-          textTransform: 'uppercase',
-          opacity: cur ? 0 : 0.7,
-          transition: 'opacity .5s',
-          pointerEvents: 'none',
-          zIndex: 5,
-        }}
-      >
-        {isDesktop ? t('hint.desktop') : t('hint.mobile')}
-      </div>
 
       {isDesktop ? (
         <DesktopZones

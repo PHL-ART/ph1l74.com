@@ -22,6 +22,11 @@ body {
   color: #ededf0;
 }
 
+:root {
+  /* Science Gothic — loaded via <link> in [locale]/layout.tsx */
+  --font-space-mono: 'Science Gothic', monospace;
+}
+
 @supports (-webkit-touch-callout: none) {
   html,
   body {

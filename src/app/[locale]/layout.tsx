@@ -1,5 +1,5 @@
 // src/app/[locale]/layout.tsx
-import { Space_Grotesk, Space_Mono } from 'next/font/google';
+import { Space_Grotesk } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -13,12 +13,8 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 });
 
-const spaceMono = Space_Mono({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-space-mono',
-  display: 'swap',
-});
+// Science Gothic is loaded via <link> in the layout — see below.
+// The CSS variable --font-space-mono is defined in globals.css pointing to it.
 
 export async function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -71,8 +67,16 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${spaceMono.variable}`}
+      className={spaceGrotesk.variable}
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Science+Gothic&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           {children}
