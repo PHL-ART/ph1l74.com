@@ -189,7 +189,8 @@ export function usePortalShader(
       depthWrite: false,
     });
     matRef.current = mat;
-    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+    const geo = new THREE.PlaneGeometry(2, 2);
+    scene.add(new THREE.Mesh(geo, mat));
 
     const resize = () => {
       const w = canvas.clientWidth || window.innerWidth;
@@ -237,6 +238,8 @@ export function usePortalShader(
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('resize', onResize);
+      mat.dispose();
+      geo.dispose();
       renderer.dispose();
       rendererRef.current = null;
       matRef.current = null;

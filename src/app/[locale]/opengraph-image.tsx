@@ -17,7 +17,8 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
       'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap',
       { headers: { 'User-Agent': 'Mozilla/5.0' } },
     ).then((r) => r.text());
-    const url = css.match(/src: url\((.+?)\)/)?.[1];
+    const matches = [...css.matchAll(/src: url\((.+?)\)/g)];
+    const url = matches[matches.length - 1]?.[1];
     if (url) fontData = await fetch(url).then((r) => r.arrayBuffer());
   } catch {
     // font load failure is non-fatal

@@ -21,21 +21,24 @@ export function PortalPage() {
 
   const [hover, setHover] = useState<SectionId | null>(null);
   const [active, setActive] = useState<SectionId | null>(null);
-  const [isDesktop, setIsDesktop] = useState(
-    typeof window !== 'undefined' ? window.innerWidth >= BREAKPOINT : true,
-  );
+  const [isDesktop, setIsDesktop] = useState(true); // safe SSR default
 
   const canvasRef = useRef<PortalCanvasHandle>(null);
+  const activeRef = useRef<SectionId | null>(null);
 
   const onHover = useCallback((id: SectionId) => {
     setHover(id);
     canvasRef.current?.setFocus(id);
   }, []);
 
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
+
   const onLeave = useCallback(() => {
     setHover(null);
-    canvasRef.current?.setFocus(active);
-  }, [active]);
+    canvasRef.current?.setFocus(activeRef.current);
+  }, []);
 
   const onSelect = useCallback((id: SectionId) => {
     setActive(id);
@@ -43,6 +46,7 @@ export function PortalPage() {
   }, []);
 
   useEffect(() => {
+    setIsDesktop(window.innerWidth >= BREAKPOINT);
     const handleResize = () => setIsDesktop(window.innerWidth >= BREAKPOINT);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);

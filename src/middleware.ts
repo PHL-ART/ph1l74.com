@@ -11,7 +11,7 @@ const RATE_LIMIT_MAX_REQUESTS = 100;
 
 const SUSPICIOUS_PATTERNS = [
   /powershell/i, /cmd\.exe/i, /bash/i, /wget/i, /curl/i, /base64/i,
-  /eval\(/i, /exec\(/i, /__proto__/i, /constructor/i, /\.\.\/\.\.\//,
+  /eval\(/i, /exec\(/i, /__proto__/i, /constructor\s*\(/i, /\.\.\/\.\.\//,
   /<script/i, /javascript:/i, /xmrig/i, /miner/i, /bot/i, /aria2c/i,
 ];
 
@@ -31,6 +31,13 @@ function checkRateLimit(ip: string): boolean {
   const record = rateLimitMap.get(ip);
   if (!record || now > record.resetTime) {
     rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    // Prevent unbounded memory growth — prune if map grows too large
+    if (rateLimitMap.size > 10_000) {
+      const pruneTime = now;
+      for (const [key, val] of rateLimitMap) {
+        if (pruneTime > val.resetTime) rateLimitMap.delete(key);
+      }
+    }
     return true;
   }
   if (record.count >= RATE_LIMIT_MAX_REQUESTS) return false;
