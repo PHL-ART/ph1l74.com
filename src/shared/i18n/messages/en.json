@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "ph1l74 — interactive portal",
+    "description": "Choose a destination: art zine, development, or music."
+  },
+  "hint": {
+    "desktop": "HOVER A ZONE TO PREVIEW",
+    "mobile": "TAP TO TUNE THE PORTAL"
+  },
+  "footer": {
+    "idle": "SELECT A DESTINATION",
+    "interactive": "Interactive Portal — three.js"
+  },
+  "header": {
+    "status": "ONLINE"
+  },
+  "sections": {
+    "art": {
+      "alias": "PHL-ART · ZINE",
+      "description": "Music, photography, essays & film reviews — my zine.",
+      "enter": "ENTER",
+      "enterFull": "ENTER PHL-ART →"
+    },
+    "dev": {
+      "alias": "PH1L74 · DEVELOPER",
+      "description": "Developer. Projects, tools & experiments under ph1l74.",
+      "enter": "ENTER",
+      "enterFull": "ENTER DEV →"
+    },
+    "music": {
+      "alias": "MANY ALIASES · ONE PLACE",
+      "description": "filatique · phlegmatix project · jimmy hydroponic & more.",
+      "enter": "ENTER",
+      "enterFull": "ENTER MUSIC →"
+    }
+  }
+}
