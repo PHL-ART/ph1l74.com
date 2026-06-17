@@ -1,88 +1,101 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Этот файл содержит инструкции для Claude Code при работе с репозиторием.
 
-## Project Overview
+## Описание проекта
 
-**ph1l74.com** is a visual router — a single full-screen landing page that routes the user to one of two subdomains:
+**ph1l74.com** — визуальный роутер: одностраничный лендинг на весь экран, направляющий пользователя на один из трёх поддоменов:
 
-- **Top half (ART)** → `art.ph1l74.com` — interactive gradient animation background, circle cursor
-- **Bottom half (DEV)** → `dev.ph1l74.com` — canvas-based animated dotted grid background, square cursor
-- **Center divider** — a frosted-glass pill (`GlassEllipse`) with the branding label "ph1l74.com"
+- **ART** → `art.ph1l74.com` — интерактивный градиентный анимированный фон, круглый курсор
+- **DEV** → `dev.ph1l74.com` — canvas-анимация с точечной сеткой, квадратный курсор
+- **MUSIC** → `music.ph1l74.com` — фиолетовый акцент
 
-Both halves start grayscale on desktop and transition to color on hover (`md:grayscale md:hover:grayscale-0`).
+Центральный разделитель — стеклянная таблетка (`GlassEllipse`) с лейблом «ph1l74.com».
 
-## Commands
+На десктопе обе половины стартуют в grayscale и переходят в цвет при hover (`md:grayscale md:hover:grayscale-0`).
+
+## Команды
 
 ```bash
-npm run dev          # Start dev server (localhost:3000)
-npm run build        # Production build
-npm run lint         # ESLint check
+npm run dev          # Dev-сервер (localhost:3000)
+npm run build        # Production-сборка
+npm run lint         # ESLint
 
 # Docker
-npm run docker:local      # Build & run with docker-compose.local.yml
-npm run docker:local:down # Stop local Docker
-npm run docker:prod       # Run production Docker (detached)
-npm run docker:logs       # Tail container logs
+npm run docker:local      # Собрать и запустить локально
+npm run docker:local:down # Остановить локальный Docker
+npm run docker:prod       # Production Docker (detached)
+npm run docker:logs       # Логи контейнера
 ```
 
-## Architecture
+## Переменные окружения
 
-### Layer structure (FSD-lite)
+Файл `.env` (не коммитится, в `.gitignore`). Шаблон: `.env.example`.
+
+| Переменная | Назначение |
+|------------|------------|
+| `NEXT_PUBLIC_GA_ID` | Google Analytics 4 Measurement ID (`G-XXXXXXXXXX`) |
+| `NEXT_PUBLIC_YM_ID` | Яндекс Метрика — номер счётчика (8 цифр) |
+
+Переменные `NEXT_PUBLIC_*` вшиваются в клиентский бандл во время `next build`. При Docker-сборке передаются через build args — docker-compose подхватывает из `.env` автоматически. Скрипты аналитики подключаются в `src/app/[locale]/layout.tsx` через `next/script` с `strategy="afterInteractive"` и рендерятся только при непустом значении переменной.
+
+## Архитектура
+
+### Структура слоёв (FSD-lite)
 
 ```
 src/
   app/
-    layout.tsx              # Root pass-through (locale layout provides html/body)
-    globals.css             # Reset + ::selection token
-    not-found.tsx           # 404 page
-    [locale]/               # next-intl locale routing (ru default, en at /en)
-      layout.tsx            # html/body, Space Grotesk + Space Mono fonts, metadata
-      page.tsx              # thin shell → PortalPage
+    layout.tsx              # Корневой pass-through (locale layout отдаёт html/body)
+    globals.css             # Сброс стилей + ::selection токен
+    not-found.tsx           # 404
+    [locale]/               # next-intl локали (ru по умолчанию, en на /en)
+      layout.tsx            # html/body, шрифты, метатеги, скрипты аналитики
+      page.tsx              # Оболочка → PortalPage
       opengraph-image.tsx   # next/og ImageResponse 1200×630
-    api/health/route.ts     # health probe (unchanged)
+    api/health/route.ts     # Health probe
 
   page-layer/
-    portal-page.tsx         # 'use client' — hover/active state, wires all widgets
+    portal-page.tsx         # 'use client' — состояние hover/active, управляет виджетами
 
   widgets/
-    portal-canvas/          # Three.js WebGL (dynamically imported, ssr:false)
-      index.tsx             # forwardRef canvas + vignette overlay
-      use-portal-shader.ts  # init, RAF loop, adaptive DPR, GLSL shaders
-    desktop-zones/          # 3-column layout (≥860px)
+    portal-canvas/          # Three.js WebGL (динамический импорт, ssr:false)
+      index.tsx             # forwardRef canvas + виньетка
+      use-portal-shader.ts  # init, RAF loop, адаптивный DPR, GLSL шейдеры
+    desktop-zones/          # 3-колоночный layout (≥860px)
       index.tsx
       zone-item.tsx
-    mobile-stack/           # Bottom-anchored tap-to-tune (<860px)
+    mobile-stack/           # Стек снизу (<860px)
       index.tsx
       mobile-block.tsx
-    portal-header/          # Fixed top bar + RU/EN lang switcher
-    portal-footer/          # Fixed bottom bar, dynamic label
+    portal-header/          # Фиксированная шапка + переключатель RU/EN
+    portal-footer/          # Фиксированный подвал, динамический лейбл
 
   shared/
     config/
-      portal.config.ts      # Sections (id/url/accent), name, handle, intensity
+      portal.config.ts      # Секции (id/url/accent), имя, handle, intensity
     i18n/
-      routing.ts            # next-intl locales, localePrefix, navigation helpers
-      request.ts            # getRequestConfig for server components
-      messages/ru.json      # Russian translations
-      messages/en.json      # English translations
+      routing.ts            # next-intl локали, localePrefix, навигационные хелперы
+      request.ts            # getRequestConfig для серверных компонентов
+      messages/ru.json      # Русские переводы
+      messages/en.json      # Английские переводы
     lib/
       utils.ts              # cn()
-      hex-to-vec3.ts        # hex → [r,g,b] float triple
+      hex-to-vec3.ts        # hex → [r,g,b] float
 ```
 
-### Key design decisions
+### Ключевые архитектурные решения
 
-- **`PortalPage`** is `'use client'` — owns `hover`/`active` state. Calls `canvasRef.current.setFocus()` imperatively so the shader lerp changes without triggering React re-renders.
-- **`PortalCanvas`** is dynamically imported with `ssr: false`. Exposes `setFocus(id)` via `useImperativeHandle`.
-- **`usePortalShader`** holds all Three.js objects in refs. The RAF loop reads `focusIdRef.current` each frame to determine lerp target color.
-- **Adaptive DPR** in `usePortalShader`: caps internal resolution to ~2MP regardless of screen size — keeps 4K perf acceptable without visible quality loss on soft gradient + grain shader.
-- **Section names (ART/DEV/MUSIC) are not translated.** Only aliases, descriptions, enter labels, hints, meta live in `i18n/messages/`.
-- **i18n routing**: `localePrefix: 'as-needed'` — `ph1l74.com` → RU, `ph1l74.com/en` → EN. next-intl middleware is chained after security checks in `middleware.ts`.
-- **Fonts**: `next/font/google` auto-downloads Space Grotesk + Space Mono at build time and self-hosts them. CSS variables `--font-space-grotesk` / `--font-space-mono` are used in inline styles.
-- **Security** (three layers — unchanged): Traefik (network edge), `next.config.ts` (static headers), `middleware.ts` (dynamic: rate limit, IP block, bot UA, suspicious patterns).
-- **Docker** (unchanged): 3-stage Alpine build, `output: 'standalone'`, non-root `nextjs` user, healthcheck spoofs `Host: ph1l74.com` header.
+- **`PortalPage`** — `'use client'`: владеет состоянием `hover`/`active`. Вызывает `canvasRef.current.setFocus()` императивно, чтобы изменение lerp-цвета шейдера не триггерило React-рендеры.
+- **`PortalCanvas`** — динамический импорт с `ssr: false`. Экспортирует `setFocus(id)` через `useImperativeHandle`.
+- **`usePortalShader`** — все объекты Three.js в рефах. RAF-цикл читает `focusIdRef.current` каждый кадр для определения целевого цвета lerp.
+- **Адаптивный DPR** в `usePortalShader`: ограничивает внутреннее разрешение до ~2MP вне зависимости от размера экрана — сохраняет производительность на 4K без потери качества на мягком градиенте + зерне.
+- **Имена секций (ART/DEV/MUSIC) не переводятся.** Переводятся: aliases, descriptions, enter labels, hints, meta.
+- **i18n роутинг**: `localePrefix: 'as-needed'` — `ph1l74.com` → RU, `ph1l74.com/en` → EN. Middleware next-intl встроен после проверок безопасности в `middleware.ts`.
+- **Шрифты**: `next/font/google` автоматически скачивает Space Grotesk + Montserrat при сборке и self-hosts их. CSS-переменные `--font-space-grotesk` / `--font-montserrat` используются в inline-стилях. Science Gothic загружается через `<link>` в layout.
+- **Безопасность** (три слоя): Traefik (сетевой edge), `next.config.ts` (статические заголовки), `middleware.ts` (динамические: rate limit, IP-блок, бот-UA, подозрительные паттерны).
+- **Docker**: 3-стадийная Alpine-сборка, `output: 'standalone'`, непривилегированный пользователь `nextjs`, healthcheck со спуфингом заголовка `Host: ph1l74.com`.
 
-### To add or change a destination
+### Добавить или изменить раздел
 
-Edit `src/shared/config/portal.config.ts` — add a new entry to `sections[]` with `id`, `url`, and `accent`. Then add matching keys to `ru.json` and `en.json` under `sections.<id>`.
+Отредактировать `src/shared/config/portal.config.ts` — добавить запись в `sections[]` с полями `id`, `url`, `accent`. Затем добавить соответствующие ключи в `ru.json` и `en.json` под `sections.<id>`.

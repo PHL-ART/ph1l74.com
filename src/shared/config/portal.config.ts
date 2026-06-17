@@ -15,6 +15,6 @@ export const PORTAL_CONFIG = {
   sections: [
     { id: 'art' as const, url: 'https://art.ph1l74.com', accent: '#e8454c' },
     { id: 'dev' as const, url: 'https://dev.ph1l74.com', accent: '#4ea2f2' },
-    { id: 'music' as const, url: 'https://music.ph1l74.com', accent: '#d94ec6' },
+    { id: 'music' as const, url: 'https://filatique.ru', accent: '#d94ec6' },
   ] satisfies PortalSection[],
 } as const;

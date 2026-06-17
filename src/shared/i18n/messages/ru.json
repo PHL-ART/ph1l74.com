@@ -1,37 +1,37 @@
 {
   "meta": {
-    "title": "ph1l74 — интерактивный портал",
-    "description": "Выбери направление: арт-журнал, разработка или музыка."
+    "title": "ph1l74.com — персональный сайт Филата Астахова.",
+    "description": "Направления: зин PHL-ART, разработка приложений, музыкальные проекты."
   },
   "hint": {
     "desktop": "НАВЕДИ НА ЗОНУ ДЛЯ ПРЕДПРОСМОТРА",
     "mobile": "НАЖМИ, ЧТОБЫ НАСТРОИТЬ ПОРТАЛ"
   },
   "footer": {
-    "idle": "ВЫБЕРИ НАПРАВЛЕНИЕ",
-    "interactive": "Interactive Portal — three.js"
+    "idle": "",
+    "interactive": ""
   },
   "header": {
-    "status": "ONLINE"
+    "status": ""
   },
   "sections": {
     "art": {
-      "alias": "PHL-ART · ЖУРНАЛ",
-      "description": "Музыка, фотография, эссе и рецензии на фильмы.",
-      "enter": "ВОЙТИ",
-      "enterFull": "ВОЙТИ В PHL-ART →"
+      "alias": "PHL · ART · ЗИН",
+      "description": "Музыка, фотография, статьи о кино...",
+      "enter": "ПЕРЕЙТИ",
+      "enterFull": "ПЕРЕЙТИ В PHL-ART →"
     },
     "dev": {
-      "alias": "PH1L74 · РАЗРАБОТЧИК",
-      "description": "Проекты, инструменты и эксперименты под псевдонимом ph1l74.",
-      "enter": "ВОЙТИ",
-      "enterFull": "ВОЙТИ В DEV →"
+      "alias": "PH1L74 · РАЗРАБОТКА",
+      "description": "Проекты, резюме и контакты Филата Астахов.",
+      "enter": "ПЕРЕЙТИ",
+      "enterFull": "ПЕРЕЙТИ В DEV →"
     },
     "music": {
-      "alias": "МНОГО ПСЕВДОНИМОВ · ОДНО МЕСТО",
-      "description": "filatique · phlegmatix project · jimmy hydroponic и другие.",
-      "enter": "ВОЙТИ",
-      "enterFull": "ВОЙТИ В MUSIC →"
+      "alias": "МУЗЫКАЛЬНЫЕ ПРОЕКТЫ",
+      "description": "filatique",
+      "enter": "ПЕРЕЙТИ",
+      "enterFull": "ПЕРЕЙТИ НА FILATIQUE →"
     }
   }
 }

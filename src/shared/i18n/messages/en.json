@@ -1,37 +1,37 @@
 {
   "meta": {
-    "title": "ph1l74 — interactive portal",
-    "description": "Choose a destination: art zine, development, or music."
+    "title": "ph1l74.com — Filat Astakhov's personal website.",
+    "description": "Directions: PHL-ART zine, app development, music projects."
   },
   "hint": {
     "desktop": "HOVER A ZONE TO PREVIEW",
     "mobile": "TAP TO TUNE THE PORTAL"
   },
   "footer": {
-    "idle": "SELECT A DESTINATION",
-    "interactive": "Interactive Portal — three.js"
+    "idle": "",
+    "interactive": ""
   },
   "header": {
-    "status": "ONLINE"
+    "status": ""
   },
   "sections": {
     "art": {
-      "alias": "PHL-ART · ZINE",
-      "description": "Music, photography, essays & film reviews — my zine.",
+      "alias": "PHL · ART · ZINE",
+      "description": "Music, photography, film essays...",
       "enter": "ENTER",
       "enterFull": "ENTER PHL-ART →"
     },
     "dev": {
-      "alias": "PH1L74 · DEVELOPER",
-      "description": "Developer. Projects, tools & experiments under ph1l74.",
+      "alias": "PH1L74 · DEVELOPMENT",
+      "description": "Projects, resume and contacts of Filat Astakhov.",
       "enter": "ENTER",
       "enterFull": "ENTER DEV →"
     },
     "music": {
-      "alias": "MANY ALIASES · ONE PLACE",
-      "description": "filatique · phlegmatix project · jimmy hydroponic & more.",
+      "alias": "MUSIC PROJECTS",
+      "description": "filatique",
       "enter": "ENTER",
-      "enterFull": "ENTER MUSIC →"
+      "enterFull": "ENTER FILATIQUE.RU →"
     }
   }
 }
