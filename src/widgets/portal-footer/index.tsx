@@ -93,7 +93,7 @@ export function PortalFooter({
         }}
       >
         POWERED BY PHL • ART
-        <PhlArtLogo size={13} />
+        <PhlArtLogo size={20} />
         2026
       </a>
     </div>

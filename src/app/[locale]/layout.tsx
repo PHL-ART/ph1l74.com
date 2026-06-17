@@ -40,6 +40,10 @@ export async function generateMetadata({
       images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
     },
     twitter: { card: 'summary_large_image' as const },
+    icons: {
+      icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+      shortcut: '/favicon.svg',
+    },
     alternates: {
       canonical: 'https://ph1l74.com',
       languages: {
