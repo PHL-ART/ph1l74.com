@@ -11,11 +11,11 @@ interface ShaderConfig {
   neutralColor: string;
 }
 
-// Caps internal shader resolution to ~2MP regardless of screen size.
-// At 4K (3840x2160) this keeps fragment work ~10x lower than native DPR 2.
+// Caps internal shader resolution to ~1.2MP regardless of screen size.
+// At 4K (3840×2160) native DPR 2 → 33M fragments; this cap → ~1.2M (~28× less).
 function getAdaptiveDpr(canvas: HTMLCanvasElement): number {
   const screenPixels = Math.max(canvas.clientWidth * canvas.clientHeight, 1);
-  const adaptiveDpr = Math.sqrt(2_000_000 / screenPixels);
+  const adaptiveDpr = Math.sqrt(1_200_000 / screenPixels);
   return Math.min(window.devicePixelRatio || 1, adaptiveDpr, 1.5);
 }
 
@@ -91,30 +91,29 @@ const FRAGMENT_SHADER = /* glsl */ `
     vec2 p = uv; p.x *= aspect;
     float t = uTime * 0.06;
 
+    // 3 snoise calls instead of 4: n1+n2 sampled at p, reused for both warp and color.
+    // n3 gives one high-quality sample at the warped position for the main gradient.
+    float n1 = snoise(vec3(p * 1.1, t));
+    float n2 = snoise(vec3(p * 1.7 + 7.0, t * 1.1));
     float warpAmt = 0.10 + uIntensity * 0.28;
-    vec2 warp = vec2(
-      snoise(vec3(p * 1.1, t)),
-      snoise(vec3(p * 1.1 + 31.4, t))
-    ) * warpAmt;
-    vec2 q = p + warp;
+    vec2 q = p + vec2(n1, n2 * 0.7) * warpAmt;
 
     vec2 m = uMouse * 0.5 + 0.5; m.x *= aspect;
     float dm = distance(q, m);
     float wave = sin(dm * 20.0 - uTime * 2.2) * exp(-dm * 3.0);
 
-    float n1 = snoise(vec3(q * 0.85, t));
-    float n2 = snoise(vec3(q * 1.7 + 7.0, t * 1.2));
+    float n3 = snoise(vec3(q * 0.85, t));
     vec3 base = vec3(0.020, 0.020, 0.026);
-    base = mix(base, vec3(0.072, 0.074, 0.090), smoothstep(-0.5, 0.7, n1));
+    base = mix(base, vec3(0.072, 0.074, 0.090), smoothstep(-0.5, 0.7, n3));
     base = mix(base, vec3(0.012, 0.012, 0.017), smoothstep(0.1, 0.95, n2));
 
-    vec3 wash = mix(uColA, uColC, smoothstep(-0.55, 0.6, n1));
+    vec3 wash = mix(uColA, uColC, smoothstep(-0.55, 0.6, n3));
     wash = mix(wash, uColB, smoothstep(0.05, 0.9, n2));
     base += wash * 0.06;
     base += wave * 0.02;
 
     float bloom = exp(-dm * dm * 1.5);
-    float band  = smoothstep(0.34, 0.0, abs(n1 * 0.5 - (uv.y - 0.5)));
+    float band  = smoothstep(0.34, 0.0, abs(n3 * 0.5 - (uv.y - 0.5)));
     float acc = bloom * (0.34 + uActivate * 0.85) + wave * 0.55 * bloom + band * 0.09 * (0.3 + uActivate);
     vec3 col = base + uColor * acc;
 
@@ -213,31 +212,49 @@ export function usePortalShader(
     const clock = new THREE.Clock();
     clockRef.current = clock;
 
-    const tick = () => {
+    // 30fps cap: lerp factors doubled vs 60fps so perceived speed stays identical.
+    const FRAME_MS = 1000 / 30;
+    let lastFrameTime = 0;
+
+    const tick = (now: number) => {
+      rafRef.current = requestAnimationFrame(tick);
+      if (now - lastFrameTime < FRAME_MS) return;
+      lastFrameTime = now;
+
       const focusId = focusIdRef.current;
       const target = focusId ? colors[focusId] : colors.neutral;
-      curColorRef.current.lerp(target, 0.06);
+      curColorRef.current.lerp(target, 0.12);
       mat.uniforms.uColor.value.copy(curColorRef.current);
 
       const actTarget = focusId ? 1 : 0;
-      mat.uniforms.uActivate.value += (actTarget - mat.uniforms.uActivate.value) * 0.06;
+      mat.uniforms.uActivate.value += (actTarget - mat.uniforms.uActivate.value) * 0.12;
 
       const m = mouseRef.current;
       const mt = mouseTargetRef.current;
-      m.x += (mt.x - m.x) * 0.07;
-      m.y += (mt.y - m.y) * 0.07;
+      m.x += (mt.x - m.x) * 0.14;
+      m.y += (mt.y - m.y) * 0.14;
       mat.uniforms.uMouse.value.set(m.x, m.y);
       mat.uniforms.uTime.value = clock.getElapsedTime();
 
       renderer.render(scene, camera);
-      rafRef.current = requestAnimationFrame(tick);
     };
-    tick();
+    rafRef.current = requestAnimationFrame(tick);
+
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(rafRef.current);
+      } else {
+        lastFrameTime = 0;
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('resize', onResize);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       mat.dispose();
       geo.dispose();
       renderer.dispose();
