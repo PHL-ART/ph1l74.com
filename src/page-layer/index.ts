@@ -1,2 +1,2 @@
-export { HomePage } from "./home-page";
+export { PortalPage } from './portal-page';
 

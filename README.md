@@ -1,237 +1,149 @@
 # ph1l74.com
 
-Одностраничное приложение на React TypeScript с использованием Aceternity UI компонентов.
+Визуальный роутер — одностраничный лендинг на весь экран, который направляет пользователя на одно из трёх поддоменов.
 
-## Описание
+## Разделы
 
-Приложение разделено на два интерактивных блока:
-- **ART** (верхний блок) - с анимированным градиентным фоном, шрифт Lato Thin, перенаправляет на art.ph1l74.com
-- **DEV** (нижний блок) - с эффектом dotted glow, шрифт BBH Sans Bartle Regular, перенаправляет на dev.ph1l74.com
-- **Glass Ellipse** - статичный элемент по центру с glass-эффектом и надписью "ph1l74.com"
+| Раздел | Поддомен | Акцентный цвет |
+|--------|----------|----------------|
+| **ART** | art.ph1l74.com | `#e8454c` (красный) |
+| **DEV** | dev.ph1l74.com | `#4ea2f2` (синий) |
+| **MUSIC** | music.ph1l74.com | `#d94ec6` (фиолетовый) |
 
-## 📱 Адаптивный дизайн
+На десктопе все секции стартуют в grayscale и переходят в цвет при hover. В центре — стеклянная таблетка (`GlassEllipse`) с меткой «ph1l74.com».
 
-Приложение полностью адаптировано для всех устройств:
-- **Mobile** (< 640px): размер шрифта 4rem, отступы 16px, блоки ровно 50% экрана
-- **Tablet** (640px+): размер шрифта 6-8rem, отступы 24-32px, блоки ровно 50% экрана
-- **Desktop** (1024px+): размер шрифта 10-12rem, без отступов, блоки ровно 50% экрана
-- **Без скролла**: контент точно помещается на экран на всех устройствах
-- **Мобильная оптимизация**: исправлена высота блоков на iPhone 13 mini
-- **Центрирование**: текст и эллипс точно по центру
+## Технологический стек
 
-## 🎨 Типографика
+- **Next.js 15** (App Router, standalone output)
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS v4**
+- **Three.js** — WebGL шейдер (GLSL, адаптивный DPR, 30 fps cap)
+- **next-intl** — i18n (RU по умолчанию, EN по `/en`)
+- **motion** — анимации
+- **next/font/google** — Space Grotesk, Montserrat (self-hosted)
 
-- **ART блок**: Lato Thin (100) - элегантный, минималистичный
-- **DEV блок**: BBH Sans Bartle Regular (400) - современный, технический
-- **Glass Ellipse**: Montserrat Regular (400) - статичный элемент с glass-эффектом
-- **Hover эффект**: увеличение при наведении на весь блок
-- **Grayscale эффект**: блоки черно-белые, становятся цветными при hover
-- **Кастомные курсоры**: круглый для ART, квадратный для DEV (работают на десктопе)
-- **Границы**: разделение блоков тонкими линиями
-- **Локальные шрифты**: загружаются из `/assets/fonts/` для лучшей производительности
+## Команды
 
-## Технологии
+```bash
+npm run dev           # Dev-сервер на localhost:3000
+npm run build         # Production-сборка
+npm run lint          # ESLint
 
-- **Next.js 15** - React framework с App Router
-- **React 19** - библиотека для создания пользовательских интерфейсов
-- **TypeScript** - типизированный JavaScript
-- **Tailwind CSS v4** - utility-first CSS фреймворк (с @tailwindcss/postcss)
-- **Aceternity UI** - компоненты для фоновых эффектов
-- **FSD** (Feature-Sliced Design) - архитектура приложения
+# Docker
+npm run docker:local      # Собрать и запустить локально
+npm run docker:local:down # Остановить локальный Docker
+npm run docker:prod       # Запустить production (detached)
+npm run docker:logs       # Логи контейнера
+```
 
-## Структура проекта (FSD + Next.js App Router)
+## Переменные окружения
+
+Скопируйте шаблон и заполните значения:
+
+```bash
+cp .env.example .env
+```
+
+| Переменная | Описание | Формат |
+|------------|----------|--------|
+| `NEXT_PUBLIC_GA_ID` | Google Analytics 4 | `G-XXXXXXXXXX` |
+| `NEXT_PUBLIC_YM_ID` | Яндекс Метрика | 8-значный номер счётчика |
+
+> **Важно:** переменные `NEXT_PUBLIC_*` вшиваются в клиентский бандл во время `next build`. При сборке через Docker они передаются как build args — docker-compose читает их автоматически из `.env`.
+
+## Архитектура (FSD-lite)
 
 ```
-app/                    # Next.js App Router
-├── api/               # API routes
-│   └── health/        # Health check endpoint
-│       └── route.ts
-├── layout.tsx         # Root layout
-├── page.tsx           # Home page
-└── globals.css        # Global styles с Tailwind CSS v4
-
 src/
-├── shared/            # Переиспользуемые модули
-│   ├── ui/           # UI компоненты
-│   │   ├── background-gradient-animation.tsx
-│   │   ├── background-ripple-effect.tsx
-│   │   └── index.ts
-│   ├── lib/          # Утилиты
-│   │   ├── utils.ts
-│   │   └── index.ts
-│   └── config/       # Конфигурация и константы
-│       └── constants.ts
-├── widgets/          # Композитные блоки
-│   ├── art-block.tsx
-│   └── dev-block.tsx
-└── pages/            # Страницы (FSD слой)
-    └── home-page.tsx
+  app/
+    layout.tsx                  # Корневой pass-through
+    globals.css                 # Сброс стилей + ::selection
+    not-found.tsx               # 404
+    [locale]/
+      layout.tsx                # html/body, шрифты, метатеги, аналитика
+      page.tsx                  # Оболочка → PortalPage
+      opengraph-image.tsx       # OG-изображение 1200×630
+    api/health/route.ts         # Health probe для Traefik/Docker
+
+  page-layer/
+    portal-page.tsx             # 'use client' — состояние hover/active
+
+  widgets/
+    portal-canvas/              # Three.js WebGL (ssr: false)
+      index.tsx                 # forwardRef canvas + виньетка
+      use-portal-shader.ts      # init, RAF loop, GLSL шейдеры
+    desktop-zones/              # 3-колоночный layout (≥860px)
+    mobile-stack/               # Стек снизу (<860px)
+    portal-header/              # Шапка + переключатель RU/EN
+    portal-footer/              # Подвал с динамической меткой
+
+  shared/
+    config/
+      portal.config.ts          # Секции (id/url/accent), имя, handle
+    i18n/
+      routing.ts                # next-intl локали и навигация
+      request.ts                # getRequestConfig для серверных компонентов
+      messages/ru.json          # Русский
+      messages/en.json          # Английский
+    lib/
+      utils.ts                  # cn()
+      hex-to-vec3.ts            # hex → [r,g,b] float
 ```
 
-## Установка и запуск
+## Деплой (Docker + Traefik)
 
-### Требования
-
-- Node.js 20.19+ или 22.12+
-- npm 10+
-
-### Установка зависимостей
+### Локально
 
 ```bash
-npm install
+npm run docker:local
+# http://localhost:3000
 ```
 
-### Запуск dev сервера
+### Production
+
+Убедитесь, что внешняя сеть создана:
 
 ```bash
-npm run dev
+docker network create ph1l74-network
 ```
 
-Приложение будет доступно по адресу http://localhost:3000/
-
-### Сборка для продакшена
+Запустите:
 
 ```bash
-npm run build
+npm run docker:prod
+npm run docker:logs
 ```
 
-Собранные файлы будут в папке `dist/`
-
-### Предпросмотр продакшен сборки
-
-```bash
-npm run preview
-```
-
-## Компоненты
-
-### Background Gradient Animation
-
-Компонент с анимированным градиентным фоном из Aceternity UI.
-
-**Особенности:**
-- Анимированные цветные круги
-- Интерактивность при наведении курсора
-- Настраиваемые цвета и параметры анимации
-
-### Background Ripple Effect
-
-Компонент с эффектом ripple на сетке при клике.
-
-**Особенности:**
-- Интерактивная сетка
-- Анимация при клике на ячейки
-- Настраиваемое количество строк и столбцов
-
-## Настройка
-
-### Изменение URL для редиректа
-
-Отредактируйте файл `src/shared/config/constants.ts`:
-
-```typescript
-export const EXTERNAL_LINKS = {
-  ART: "https://art.ph1l74.com",
-  DEV: "https://dev.ph1l74.com",
-} as const;
-```
-
-### Кастомизация цветов и анимаций
-
-Настройки анимаций находятся в `app/globals.css`:
-- В блоке `@theme inline` определены CSS переменные для анимаций
-- В `@keyframes` блоках описаны сами анимации
-
-Tailwind CSS v4 использует новый подход с `@import "tailwindcss"` и `@theme inline` вместо традиционных директив `@tailwind`.
-
-### Next.js конфигурация
-
-Файл `next.config.ts` настроен для:
-- Standalone output для Docker
-- Оптимизации изображений (AVIF, WebP)
-- Удаления console.log в продакшене
-
-## Docker
-
-### Локальная разработка
-
-Запустить приложение в Docker контейнере локально:
-
-```bash
-# Сборка и запуск
-docker-compose -f docker-compose.local.yml up --build
-
-# Остановка
-docker-compose -f docker-compose.local.yml down
-```
-
-Приложение будет доступно на http://localhost:3000/
-
-### Продакшен с Traefik
-
-Для продакшен окружения с Traefik:
-
-```bash
-# Убедитесь, что сеть traefik-network создана
-docker network create traefik-network
-
-# Сборка и запуск
-docker-compose up -d --build
-
-# Просмотр логов
-docker-compose logs -f
-
-# Остановка
-docker-compose down
-```
-
-#### Настройка Traefik
-
-В `docker-compose.yml` настроены labels для автоматической конфигурации Traefik:
-- Автоматическое получение SSL сертификатов через Let's Encrypt
-- Редирект с HTTP на HTTPS
-- Редирект с www на non-www (опционально)
+docker-compose настроен на автоматическую работу с Traefik:
+- SSL через Let's Encrypt
+- Редирект HTTP → HTTPS
+- Редирект www → non-www
 - Security headers
+- Rate limiting (100 req/мин)
 
-Измените доменное имя в labels на свой домен:
-```yaml
-- "traefik.http.routers.ph1l74-frontend.rule=Host(`your-domain.com`)"
-```
+### Переменные при Docker-сборке
 
-### Docker образ
+`.env` автоматически считывается docker-compose. Переменные `NEXT_PUBLIC_*` передаются в `Dockerfile` как build args и доступны во время `next build`.
 
-**Multi-stage build:**
-1. **Stage 1 (deps)**: Установка зависимостей
-2. **Stage 2 (builder)**: Сборка Next.js приложения
-3. **Stage 3 (runner)**: Production сервер
+## Безопасность (три слоя)
 
-**Особенности:**
-- Next.js standalone output для минимального размера
-- Non-root пользователь (nextjs:nodejs)
-- Работает на порту 3000
-- Health check через API route `/api/health`
-- Оптимизированный размер образа (~150MB)
+1. **Traefik** — сетевой edge (rate limit, HTTPS, headers)
+2. **next.config.ts** — статические HTTP-заголовки
+3. **middleware.ts** — динамические проверки: rate limit, IP-блокировка, бот-UA, подозрительные паттерны
 
-## Troubleshooting
+## i18n
 
-Если возникли проблемы при разработке или деплое, см. [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+Роутинг: `localePrefix: 'as-needed'`
+- `ph1l74.com` → RU
+- `ph1l74.com/en` → EN
 
-Основные решения:
-- **404 на localhost:3000** - удалить конфликтующие директории `app/` и `src/pages/`
-- **Hydration mismatch** - добавить `suppressHydrationWarning` в layout
-- **Viewport warning** - использовать отдельный экспорт `viewport`
-- **Can't resolve 'tw-animate-css'** - удалить несуществующие пакеты из `globals.css`
+Имена секций (ART / DEV / MUSIC) не переводятся. Переводятся: alias, description, enter-label, meta.
 
-## Адаптивный дизайн
+## Добавить новую секцию
 
-См. [RESPONSIVE_DESIGN.md](./RESPONSIVE_DESIGN.md) для детальной информации об адаптивности.
-
-Основные breakpoints:
-- **Mobile**: `text-[4rem] px-4` (< 640px)
-- **Small**: `text-[6rem] px-6` (640px+)
-- **Medium**: `text-[8rem] px-8` (768px+)
-- **Large**: `text-[10rem] px-10` (1024px+)
-- **XL**: `text-[12rem] px-0` (1280px+)
+1. Добавить запись в `src/shared/config/portal.config.ts` → `sections[]` (поля: `id`, `url`, `accent`)
+2. Добавить ключи `sections.<id>` в `ru.json` и `en.json`
 
 ## Лицензия
 

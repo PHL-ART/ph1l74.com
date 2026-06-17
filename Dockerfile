@@ -29,6 +29,12 @@ COPY . .
 # Set environment for build
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Analytics IDs are baked into the client bundle at build time
+ARG NEXT_PUBLIC_GA_ID
+ARG NEXT_PUBLIC_YM_ID
+ENV NEXT_PUBLIC_GA_ID=$NEXT_PUBLIC_GA_ID
+ENV NEXT_PUBLIC_YM_ID=$NEXT_PUBLIC_YM_ID
+
 # Build Next.js app
 RUN npm run build
 

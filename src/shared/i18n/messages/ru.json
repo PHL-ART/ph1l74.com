@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "ph1l74.com — персональный сайт Филата Астахова.",
+    "description": "Направления: зин PHL-ART, разработка приложений, музыкальные проекты."
+  },
+  "hint": {
+    "desktop": "НАВЕДИ НА ЗОНУ ДЛЯ ПРЕДПРОСМОТРА",
+    "mobile": "НАЖМИ, ЧТОБЫ НАСТРОИТЬ ПОРТАЛ"
+  },
+  "footer": {
+    "idle": "",
+    "interactive": ""
+  },
+  "header": {
+    "status": ""
+  },
+  "sections": {
+    "art": {
+      "alias": "PHL · ART · ЗИН",
+      "description": "Музыка, фотография, статьи о кино...",
+      "enter": "ПЕРЕЙТИ",
+      "enterFull": "ПЕРЕЙТИ В PHL-ART →"
+    },
+    "dev": {
+      "alias": "PH1L74 · РАЗРАБОТКА",
+      "description": "Проекты, резюме и контакты Филата Астахов.",
+      "enter": "ПЕРЕЙТИ",
+      "enterFull": "ПЕРЕЙТИ В DEV →"
+    },
+    "music": {
+      "alias": "МУЗЫКАЛЬНЫЕ ПРОЕКТЫ",
+      "description": "filatique",
+      "enter": "ПЕРЕЙТИ",
+      "enterFull": "ПЕРЕЙТИ НА FILATIQUE →"
+    }
+  }
+}
