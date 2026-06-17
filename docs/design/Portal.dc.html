@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    html,body{margin:0;padding:0;background:#0a0a0b;}
+    *{box-sizing:border-box;}
+    ::selection{background:#e8454c;color:#0a0a0b;}
+  </style>
+</helmet>
+
+<div style="position:fixed;inset:0;overflow:hidden;background:#0a0a0b;font-family:'Space Grotesk',sans-serif;color:#ededf0;">
+
+  <canvas ref="{{ canvasRef }}" style="position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;pointer-events:none;"></canvas>
+
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:2;background:radial-gradient(120% 95% at 50% 44%, transparent 42%, rgba(10,10,11,0.55) 100%);"></div>
+
+  <div style="position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:20px 30px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#6a6a72;z-index:6;border-bottom:1px solid #15151a;pointer-events:none;">
+    <span style="display:flex;align-items:center;gap:9px;color:#cfcfd6;"><span style="width:9px;height:9px;background:#ededf0;display:inline-block;"></span>{{ name }}</span>
+    <span style="display:flex;gap:8px;align-items:center;"><span style="width:6px;height:6px;border-radius:50%;background:#3ad17a;display:inline-block;box-shadow:0 0 8px #3ad17a;"></span>ONLINE</span>
+    <span>{{ handle }} / 2026</span>
+  </div>
+
+  <div style="{{ hintStyle }}">{{ hintText }}</div>
+
+  <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;display:flex;z-index:4;">
+
+      <a href="#art" style="{{ artStyles.zone }}" onMouseEnter="{{ onArt }}" onMouseLeave="{{ onLeave }}">
+        <span style="{{ artStyles.num }}">01</span>
+        <div style="{{ artStyles.inner }}">
+          <h2 style="{{ artStyles.title }}">ART</h2>
+          <div style="{{ artStyles.alias }}">PHL-ART · ZINE</div>
+          <div style="{{ artStyles.desc }}">Music, photography, essays &amp; film reviews — my zine.</div>
+          <div style="{{ artStyles.enter }}">ENTER <span>&rarr;</span></div>
+        </div>
+        <span style="{{ artStyles.bar }}"></span>
+      </a>
+
+      <a href="#dev" style="{{ devStyles.zone }}" onMouseEnter="{{ onDev }}" onMouseLeave="{{ onLeave }}">
+        <span style="{{ devStyles.num }}">02</span>
+        <div style="{{ devStyles.inner }}">
+          <h2 style="{{ devStyles.title }}">DEV</h2>
+          <div style="{{ devStyles.alias }}">PH1L74 · DEVELOPER</div>
+          <div style="{{ devStyles.desc }}">Developer. Projects, tools &amp; experiments under ph1l74.</div>
+          <div style="{{ devStyles.enter }}">ENTER <span>&rarr;</span></div>
+        </div>
+        <span style="{{ devStyles.bar }}"></span>
+      </a>
+
+      <a href="#music" style="{{ musicStyles.zone }}" onMouseEnter="{{ onMusic }}" onMouseLeave="{{ onLeave }}">
+        <span style="{{ musicStyles.num }}">03</span>
+        <div style="{{ musicStyles.inner }}">
+          <h2 style="{{ musicStyles.title }}">MUSIC</h2>
+          <div style="{{ musicStyles.alias }}">MANY ALIASES · ONE PLACE</div>
+          <div style="{{ musicStyles.desc }}">filatique · phlegmatix project · jimmy hydroponic &amp; more.</div>
+          <div style="{{ musicStyles.enter }}">ENTER <span>&rarr;</span></div>
+        </div>
+        <span style="{{ musicStyles.bar }}"></span>
+      </a>
+
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:4;padding-top:60px;">
+      <div style="flex:1;"></div>
+      <div style="display:flex;flex-direction:column;background:linear-gradient(to top, rgba(10,10,11,0.92), rgba(10,10,11,0.0));">
+
+        <div style="{{ mArt.block }}" onClick="{{ selArt }}">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;">
+            <h2 style="{{ mArt.title }}">ART</h2>
+            <span style="{{ mArt.num }}">01</span>
+          </div>
+          <div style="{{ mArt.alias }}">PHL-ART · ZINE</div>
+          <div style="{{ mArt.desc }}">Music, photography, essays &amp; film reviews.</div>
+          <a href="#art" style="{{ mArt.enter }}">ENTER PHL-ART &rarr;</a>
+        </div>
+
+        <div style="{{ mDev.block }}" onClick="{{ selDev }}">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;">
+            <h2 style="{{ mDev.title }}">DEV</h2>
+            <span style="{{ mDev.num }}">02</span>
+          </div>
+          <div style="{{ mDev.alias }}">PH1L74 · DEVELOPER</div>
+          <div style="{{ mDev.desc }}">Projects, tools &amp; experiments under ph1l74.</div>
+          <a href="#dev" style="{{ mDev.enter }}">ENTER DEV &rarr;</a>
+        </div>
+
+        <div style="{{ mMusic.block }}" onClick="{{ selMusic }}">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;">
+            <h2 style="{{ mMusic.title }}">MUSIC</h2>
+            <span style="{{ mMusic.num }}">03</span>
+          </div>
+          <div style="{{ mMusic.alias }}">MANY ALIASES · ONE PLACE</div>
+          <div style="{{ mMusic.desc }}">filatique · phlegmatix · jimmy hydroponic &amp; more.</div>
+          <a href="#music" style="{{ mMusic.enter }}">ENTER MUSIC &rarr;</a>
+        </div>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:15px 30px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#55555f;border-top:1px solid #15151a;z-index:6;pointer-events:none;text-transform:uppercase;">
+    <span style="{{ footerLeftStyle }}">{{ footerLeft }}</span>
+    <span>Interactive Portal — three.js</span>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;name&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;FILAT ASTAKHOV&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;handle&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;ph1l74&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;artAccent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#e8454c&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;devAccent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#4ea2f2&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;musicAccent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#d94ec6&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;intensity&quot;: { &quot;editor&quot;: &quot;float&quot;, &quot;default&quot;: 0.4, &quot;min&quot;: 0.1, &quot;max&quot;: 0.9, &quot;step&quot;: 0.05, &quot;tsType&quot;: &quot;number&quot; }
+}">
+class Component extends DCLogic {
+  state = { hover: null, active: null, w: (typeof window !== 'undefined' ? window.innerWidth : 1280) };
+  canvasRef = React.createRef();
+
+  componentDidMount() {
+    this.mouse = { x: 0, y: 0 };
+    this.mouseTarget = { x: 0, y: 0 };
+    this.focusId = null;
+
+    this._onMove = (e) => {
+      this.mouseTarget.x = (e.clientX / window.innerWidth) * 2 - 1;
+      this.mouseTarget.y = -((e.clientY / window.innerHeight) * 2 - 1);
+    };
+    this._onResize = () => {
+      this.setState({ w: window.innerWidth });
+      if (this._resize) this._resize();
+    };
+    window.addEventListener('mousemove', this._onMove);
+    window.addEventListener('resize', this._onResize);
+
+    if (window.THREE) this.initThree();
+    else this._poll = setInterval(() => { if (window.THREE) { clearInterval(this._poll); this._poll = null; this.initThree(); } }, 50);
+  }
+
+  componentWillUnmount() {
+    if (this._raf) cancelAnimationFrame(this._raf);
+    if (this._poll) clearInterval(this._poll);
+    window.removeEventListener('mousemove', this._onMove);
+    window.removeEventListener('resize', this._onResize);
+    if (this.renderer) this.renderer.dispose();
+  }
+
+  componentDidUpdate() {
+    if (!this.colors) return;
+    const P = this.props || {};
+    const acc = { art: P.artAccent || '#e8454c', dev: P.devAccent || '#4ea2f2', music: P.musicAccent || '#d94ec6' };
+    this.colors.art.set(acc.art); this.colors.dev.set(acc.dev); this.colors.music.set(acc.music);
+    if (this.gradMat) {
+      this.gradMat.uniforms.uIntensity.value = (P.intensity != null ? P.intensity : 0.4);
+      this.gradMat.uniforms.uColA.value.copy(this.colors.art);
+      this.gradMat.uniforms.uColB.value.copy(this.colors.dev);
+      this.gradMat.uniforms.uColC.value.copy(this.colors.music);
+    }
+  }
+
+  initThree() {
+    const THREE = window.THREE;
+    const canvas = this.canvasRef.current;
+    if (!canvas) return;
+    const P = this.props || {};
+    const acc = { art: P.artAccent || '#e8454c', dev: P.devAccent || '#4ea2f2', music: P.musicAccent || '#d94ec6' };
+    this.colors = {
+      neutral: new THREE.Color('#9098b0'),
+      art: new THREE.Color(acc.art),
+      dev: new THREE.Color(acc.dev),
+      music: new THREE.Color(acc.music)
+    };
+    this.curColor = this.colors.neutral.clone();
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    this.renderer = renderer;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.Camera();
+
+    const snoise = `
+      vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x,289.0);}
+      vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
+      float snoise(vec3 v){
+        const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+        const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+        vec3 i  = floor(v + dot(v, C.yyy));
+        vec3 x0 = v - i + dot(i, C.xxx);
+        vec3 g = step(x0.yzx, x0.xyz);
+        vec3 l = 1.0 - g;
+        vec3 i1 = min(g.xyz, l.zxy);
+        vec3 i2 = max(g.xyz, l.zxy);
+        vec3 x1 = x0 - i1 + 1.0 * C.xxx;
+        vec3 x2 = x0 - i2 + 2.0 * C.xxx;
+        vec3 x3 = x0 - 1.0 + 3.0 * C.xxx;
+        i = mod(i, 289.0);
+        vec4 p = permute( permute( permute(
+                  i.z + vec4(0.0, i1.z, i2.z, 1.0))
+                + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+                + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+        float n_ = 1.0/7.0;
+        vec3 ns = n_ * D.wyz - D.xzx;
+        vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+        vec4 x_ = floor(j * ns.z);
+        vec4 y_ = floor(j - 7.0 * x_);
+        vec4 x = x_ * ns.x + ns.yyyy;
+        vec4 y = y_ * ns.x + ns.yyyy;
+        vec4 h = 1.0 - abs(x) - abs(y);
+        vec4 b0 = vec4(x.xy, y.xy);
+        vec4 b1 = vec4(x.zw, y.zw);
+        vec4 s0 = floor(b0)*2.0 + 1.0;
+        vec4 s1 = floor(b1)*2.0 + 1.0;
+        vec4 sh = -step(h, vec4(0.0));
+        vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+        vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+        vec3 p0 = vec3(a0.xy, h.x);
+        vec3 p1 = vec3(a0.zw, h.y);
+        vec3 p2 = vec3(a1.xy, h.z);
+        vec3 p3 = vec3(a1.zw, h.w);
+        vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+        p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+        vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+        m = m * m;
+        return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+      }`;
+
+    const vertexShader = `
+      void main(){ gl_Position = vec4(position.xy, 0.0, 1.0); }`;
+
+    const fragmentShader = `
+      precision highp float;
+      uniform float uTime; uniform vec2 uResolution; uniform vec2 uMouse;
+      uniform vec3 uColor; uniform float uActivate; uniform float uIntensity;
+      uniform vec3 uColA; uniform vec3 uColB; uniform vec3 uColC;
+      ${snoise}
+      void main(){
+        vec2 uv = gl_FragCoord.xy / uResolution;
+        float aspect = uResolution.x / uResolution.y;
+        vec2 p = uv; p.x *= aspect;
+        float t = uTime * 0.06;
+
+        float warpAmt = 0.10 + uIntensity * 0.28;
+        vec2 warp = vec2(
+          snoise(vec3(p * 1.1, t)),
+          snoise(vec3(p * 1.1 + 31.4, t))
+        ) * warpAmt;
+        vec2 q = p + warp;
+
+        vec2 m = uMouse * 0.5 + 0.5; m.x *= aspect;
+        float dm = distance(q, m);
+
+        float wave = sin(dm * 20.0 - uTime * 2.2) * exp(-dm * 3.0);
+
+        float n1 = snoise(vec3(q * 0.85, t));
+        float n2 = snoise(vec3(q * 1.7 + 7.0, t * 1.2));
+        vec3 base = vec3(0.020, 0.020, 0.026);
+        base = mix(base, vec3(0.072, 0.074, 0.090), smoothstep(-0.5, 0.7, n1));
+        base = mix(base, vec3(0.012, 0.012, 0.017), smoothstep(0.1, 0.95, n2));
+
+        // brand ambient wash — faint grainy multicolor, always alive (PHL-ART signature)
+        vec3 wash = mix(uColA, uColC, smoothstep(-0.55, 0.6, n1));
+        wash = mix(wash, uColB, smoothstep(0.05, 0.9, n2));
+        base += wash * 0.06;
+        base += wave * 0.02;
+
+        // focus bloom following the cursor
+        float bloom = exp(-dm * dm * 1.5);
+        float band = smoothstep(0.34, 0.0, abs(n1 * 0.5 - (uv.y - 0.5)));
+        float acc = bloom * (0.34 + uActivate * 0.85) + wave * 0.55 * bloom + band * 0.09 * (0.3 + uActivate);
+        vec3 col = base + uColor * acc;
+
+        float vig = smoothstep(1.3, 0.3, distance(uv, vec2(0.5)));
+        col *= 0.5 + 0.5 * vig;
+
+        // animated film grain — PHL-ART signature texture
+        float g = fract(sin(dot(gl_FragCoord.xy + floor(uTime * 24.0), vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
+        col += g * 0.05;
+
+        gl_FragColor = vec4(col, 1.0);
+      }`;
+
+    const mat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uResolution: { value: new THREE.Vector2(1, 1) },
+        uMouse: { value: new THREE.Vector2() },
+        uColor: { value: this.curColor.clone() },
+        uActivate: { value: 0 },
+        uIntensity: { value: (P.intensity != null ? P.intensity : 0.4) },
+        uColA: { value: this.colors.art.clone() },
+        uColB: { value: this.colors.dev.clone() },
+        uColC: { value: this.colors.music.clone() }
+      },
+      vertexShader, fragmentShader, depthTest: false, depthWrite: false
+    });
+    this.gradMat = mat;
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+
+    this._resize = () => {
+      const w = canvas.clientWidth || window.innerWidth;
+      const h = canvas.clientHeight || window.innerHeight;
+      renderer.setSize(w, h, false);
+      const dpr = renderer.getPixelRatio();
+      mat.uniforms.uResolution.value.set(w * dpr, h * dpr);
+    };
+    this._resize();
+
+    const clock = new THREE.Clock();
+    const tick = () => {
+      const target = this.focusId ? this.colors[this.focusId] : this.colors.neutral;
+      this.curColor.lerp(target, 0.06);
+      mat.uniforms.uColor.value.copy(this.curColor);
+
+      const actT = this.focusId ? 1 : 0;
+      mat.uniforms.uActivate.value += (actT - mat.uniforms.uActivate.value) * 0.06;
+
+      this.mouse.x += (this.mouseTarget.x - this.mouse.x) * 0.07;
+      this.mouse.y += (this.mouseTarget.y - this.mouse.y) * 0.07;
+      mat.uniforms.uMouse.value.set(this.mouse.x, this.mouse.y);
+      mat.uniforms.uTime.value = clock.getElapsedTime();
+
+      renderer.render(scene, camera);
+      this._raf = requestAnimationFrame(tick);
+    };
+    tick();
+  }
+
+  renderVals() {
+    const P = this.props || {};
+    const accents = { art: P.artAccent || '#e8454c', dev: P.devAccent || '#4ea2f2', music: P.musicAccent || '#d94ec6' };
+    const w = this.state.w;
+    const isMobile = w < 860;
+    const isDesktop = !isMobile;
+    const hov = this.state.hover, act = this.state.active;
+    const cur = hov || act;
+
+    const enter = (id) => () => { this.setState({ hover: id }); this.focusId = id; };
+    const leave = () => { this.setState({ hover: null }); this.focusId = this.state.active || null; };
+    const sel = (id) => () => { this.setState({ active: id }); this.focusId = id; };
+
+    const styleSet = (id, accent, isLast) => {
+      const on = hov === id;
+      const otherHover = hov && hov !== id;
+      return {
+        zone: {
+          flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+          padding: '0 0 42px 0', textDecoration: 'none', color: 'inherit', cursor: 'pointer',
+          borderRight: isLast ? 'none' : '1px solid #1a1a20', overflow: 'hidden',
+          opacity: otherHover ? 0.3 : 1, transition: 'opacity .55s cubic-bezier(.2,.7,.2,1)'
+        },
+        num: {
+          position: 'absolute', top: '88px', left: '34px', fontFamily: '"Space Mono",monospace',
+          fontSize: '12px', letterSpacing: '3px', color: on ? accent : '#50505a', transition: 'color .4s', zIndex: 2
+        },
+        inner: {
+          padding: '0 34px', position: 'relative', zIndex: 2,
+          transform: on ? 'translateY(-6px)' : 'translateY(0)', transition: 'transform .55s cubic-bezier(.2,.7,.2,1)'
+        },
+        title: {
+          fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: 'clamp(44px,4.6vw,86px)',
+          lineHeight: 0.9, letterSpacing: '-0.03em', color: on ? accent : '#ededf0', transition: 'color .4s', margin: 0
+        },
+        alias: {
+          fontFamily: '"Space Mono",monospace', fontSize: '12px', letterSpacing: '2px',
+          color: '#85858d', marginTop: '16px', textTransform: 'uppercase'
+        },
+        desc: {
+          fontFamily: '"Space Grotesk",sans-serif', fontSize: '14px', lineHeight: 1.5, color: '#a6a6ae',
+          maxWidth: '28ch', overflow: 'hidden',
+          maxHeight: on ? '90px' : '0px', opacity: on ? 1 : 0, marginTop: on ? '16px' : '0px',
+          transition: 'all .55s cubic-bezier(.2,.7,.2,1)'
+        },
+        enter: {
+          display: 'inline-flex', alignItems: 'center', gap: on ? '16px' : '8px',
+          fontFamily: '"Space Mono",monospace', fontSize: '12px', letterSpacing: '3px',
+          color: on ? accent : '#65656d', marginTop: '24px', transition: 'color .4s, gap .4s'
+        },
+        bar: {
+          position: 'absolute', left: 0, bottom: 0, height: '3px', width: on ? '100%' : '0%',
+          background: accent, transition: 'width .6s cubic-bezier(.2,.7,.2,1)', zIndex: 2,
+          boxShadow: on ? ('0 0 16px ' + accent) : 'none'
+        }
+      };
+    };
+
+    const mobileSet = (id, accent) => {
+      const on = act === id;
+      return {
+        block: {
+          display: 'flex', flexDirection: 'column', gap: '2px', padding: '20px 22px',
+          borderTop: '1px solid #18181d', position: 'relative', cursor: 'pointer',
+          background: on ? 'rgba(255,255,255,0.025)' : 'transparent', transition: 'background .3s'
+        },
+        title: {
+          fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: '34px', lineHeight: 1,
+          letterSpacing: '-0.02em', color: on ? accent : '#ededf0', margin: 0, transition: 'color .3s'
+        },
+        num: { fontFamily: '"Space Mono",monospace', fontSize: '11px', color: on ? accent : '#50505a', letterSpacing: '2px' },
+        alias: { fontFamily: '"Space Mono",monospace', fontSize: '11px', letterSpacing: '1px', color: '#85858d', textTransform: 'uppercase', marginTop: '6px' },
+        desc: {
+          fontFamily: '"Space Grotesk",sans-serif', fontSize: '13px', lineHeight: 1.5, color: '#a6a6ae',
+          overflow: 'hidden', maxHeight: on ? '60px' : '0px', opacity: on ? 1 : 0, marginTop: on ? '10px' : '0px', transition: 'all .4s'
+        },
+        enter: {
+          display: on ? 'inline-flex' : 'none', alignItems: 'center', gap: '8px',
+          fontFamily: '"Space Mono",monospace', fontSize: '11px', letterSpacing: '2px',
+          color: accent, marginTop: '12px', textDecoration: 'none'
+        }
+      };
+    };
+
+    const labels = { art: 'PHL-ART', dev: 'DEV / ph1l74', music: 'MUSIC' };
+    const footerLeft = cur ? ('> ' + labels[cur]) : 'SELECT A DESTINATION';
+
+    return {
+      canvasRef: this.canvasRef,
+      name: P.name || 'FILAT ASTAKHOV',
+      handle: P.handle || 'ph1l74',
+      isMobile, isDesktop,
+      footerLeft,
+      footerLeftStyle: { color: cur ? (accents[cur]) : '#55555f', transition: 'color .4s' },
+      hintText: isMobile ? 'TAP TO TUNE THE PORTAL' : 'HOVER A ZONE TO PREVIEW',
+      hintStyle: {
+        position: 'absolute', left: 0, right: 0,
+        top: isMobile ? 'auto' : '112px', bottom: isMobile ? '236px' : 'auto',
+        textAlign: 'center', fontFamily: '"Space Mono",monospace', fontSize: '11px', letterSpacing: '4px',
+        color: '#5a5a64', textTransform: 'uppercase', opacity: cur ? 0 : 0.7, transition: 'opacity .5s',
+        pointerEvents: 'none', zIndex: 5
+      },
+      artStyles: styleSet('art', accents.art, false),
+      devStyles: styleSet('dev', accents.dev, false),
+      musicStyles: styleSet('music', accents.music, true),
+      mArt: mobileSet('art', accents.art),
+      mDev: mobileSet('dev', accents.dev),
+      mMusic: mobileSet('music', accents.music),
+      onArt: enter('art'), onDev: enter('dev'), onMusic: enter('music'), onLeave: leave,
+      selArt: sel('art'), selDev: sel('dev'), selMusic: sel('music')
+    };
+  }
+}
+</script>
+</body>
+</html>

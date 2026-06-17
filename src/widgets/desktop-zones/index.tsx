@@ -5,7 +5,6 @@ import { ZoneItem } from './zone-item';
 interface ZoneTranslation {
   alias: string;
   description: string;
-  enter: string;
 }
 
 interface DesktopZonesProps {

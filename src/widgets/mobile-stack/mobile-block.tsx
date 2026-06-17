@@ -9,7 +9,6 @@ interface MobileBlockTranslation {
 
 interface MobileBlockProps {
   section: PortalSection;
-  index: number;
   isActive: boolean;
   translation: MobileBlockTranslation;
   onSelect: (id: SectionId) => void;
@@ -18,9 +17,8 @@ interface MobileBlockProps {
 const GROTESK: React.CSSProperties = { fontFamily: 'var(--font-space-grotesk), sans-serif' };
 const MONO: React.CSSProperties = { fontFamily: 'var(--font-space-mono), monospace' };
 
-export function MobileBlock({ section, index, isActive, translation, onSelect }: MobileBlockProps) {
+export function MobileBlock({ section, isActive, translation, onSelect }: MobileBlockProps) {
   const { id, url, accent } = section;
-  const num = String(index + 1).padStart(2, '0');
 
   return (
     <div
@@ -29,40 +27,27 @@ export function MobileBlock({ section, index, isActive, translation, onSelect }:
         display: 'flex',
         flexDirection: 'column',
         padding: '20px 22px',
-        borderTop: '1px solid #18181d',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
         cursor: 'pointer',
         background: isActive ? 'rgba(255,255,255,0.025)' : 'transparent',
         transition: 'background .3s',
       }}
     >
-      {/* Title row */}
-      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-        <h2
-          style={{
-            ...GROTESK,
-            fontWeight: 700,
-            fontSize: 34,
-            lineHeight: 1,
-            letterSpacing: '-0.02em',
-            color: isActive ? accent : '#ededf0',
-            margin: 0,
-            transition: 'color .3s',
-          }}
-        >
-          {id.toUpperCase()}
-        </h2>
-        <span
-          style={{
-            ...MONO,
-            fontSize: 11,
-            letterSpacing: '2px',
-            color: isActive ? accent : '#50505a',
-            transition: 'color .3s',
-          }}
-        >
-          {num}
-        </span>
-      </div>
+      {/* Title */}
+      <h2
+        style={{
+          ...GROTESK,
+          fontWeight: 700,
+          fontSize: 34,
+          lineHeight: 1,
+          letterSpacing: '-0.02em',
+          color: isActive ? accent : '#ededf0',
+          margin: 0,
+          transition: 'color .3s',
+        }}
+      >
+        {id.toUpperCase()}
+      </h2>
 
       {/* Alias */}
       <div

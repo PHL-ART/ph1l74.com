@@ -53,9 +53,9 @@ export function PortalPage() {
   }, []);
 
   const sectionTranslations = {
-    art:   { alias: t('sections.art.alias'),   description: t('sections.art.description'),   enter: t('sections.art.enter'),   enterFull: t('sections.art.enterFull') },
-    dev:   { alias: t('sections.dev.alias'),   description: t('sections.dev.description'),   enter: t('sections.dev.enter'),   enterFull: t('sections.dev.enterFull') },
-    music: { alias: t('sections.music.alias'), description: t('sections.music.description'), enter: t('sections.music.enter'), enterFull: t('sections.music.enterFull') },
+    art:   { alias: t('sections.art.alias'),   description: t('sections.art.description'),   enterFull: t('sections.art.enterFull') },
+    dev:   { alias: t('sections.dev.alias'),   description: t('sections.dev.description'),   enterFull: t('sections.dev.enterFull') },
+    music: { alias: t('sections.music.alias'), description: t('sections.music.description'), enterFull: t('sections.music.enterFull') },
   } as const;
 
   const cur = hover ?? active;
@@ -73,12 +73,7 @@ export function PortalPage() {
     >
       <PortalCanvas ref={canvasRef as React.Ref<PortalCanvasHandle>} />
 
-      <PortalHeader
-        name={PORTAL_CONFIG.name}
-        handle={PORTAL_CONFIG.handle}
-        year={PORTAL_CONFIG.year}
-        statusLabel={t('header.status')}
-      />
+      <PortalHeader name={PORTAL_CONFIG.name} />
 
       {/* Hint text — fades when anything is focused */}
       <div
@@ -125,7 +120,6 @@ export function PortalPage() {
         active={active}
         sections={PORTAL_CONFIG.sections}
         idleLabel={t('footer.idle')}
-        interactiveLabel={t('footer.interactive')}
       />
     </div>
   );

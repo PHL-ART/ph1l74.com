@@ -6,16 +6,13 @@ import { Link } from '@/shared/i18n/routing';
 
 interface PortalHeaderProps {
   name: string;
-  handle: string;
-  year: string;
-  statusLabel: string;
 }
 
 const MONO: React.CSSProperties = {
   fontFamily: 'var(--font-space-mono), monospace',
 };
 
-export function PortalHeader({ name, handle, year, statusLabel }: PortalHeaderProps) {
+export function PortalHeader({ name }: PortalHeaderProps) {
   const locale = useLocale();
 
   return (
@@ -35,7 +32,7 @@ export function PortalHeader({ name, handle, year, statusLabel }: PortalHeaderPr
         textTransform: 'uppercase',
         color: '#6a6a72',
         zIndex: 6,
-        borderBottom: '1px solid #15151a',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
         pointerEvents: 'none',
       }}
     >
@@ -47,53 +44,31 @@ export function PortalHeader({ name, handle, year, statusLabel }: PortalHeaderPr
         {name}
       </span>
 
-      {/* Center: status */}
-      <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <span
+      {/* Right: lang switcher */}
+      <span style={{ pointerEvents: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
+        <Link
+          href="/"
+          locale="ru"
           style={{
-            width: 6,
-            height: 6,
-            borderRadius: '50%',
-            background: '#3ad17a',
-            display: 'inline-block',
-            boxShadow: '0 0 8px #3ad17a',
-            flexShrink: 0,
+            color: locale === 'ru' ? '#ededf0' : '#50505a',
+            textDecoration: 'none',
+            transition: 'color .3s',
           }}
-        />
-        {statusLabel}
-      </span>
-
-      {/* Right: handle + lang switcher */}
-      <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span>
-          {handle} / {year}
-        </span>
-        <span style={{ color: '#1a1a20' }}>|</span>
-        <span style={{ pointerEvents: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
-          <Link
-            href="/"
-            locale="ru"
-            style={{
-              color: locale === 'ru' ? '#ededf0' : '#50505a',
-              textDecoration: 'none',
-              transition: 'color .3s',
-            }}
-          >
-            RU
-          </Link>
-          <span style={{ color: '#30303a' }}>/</span>
-          <Link
-            href="/"
-            locale="en"
-            style={{
-              color: locale === 'en' ? '#ededf0' : '#50505a',
-              textDecoration: 'none',
-              transition: 'color .3s',
-            }}
-          >
-            EN
-          </Link>
-        </span>
+        >
+          RU
+        </Link>
+        <span style={{ color: '#30303a' }}>/</span>
+        <Link
+          href="/"
+          locale="en"
+          style={{
+            color: locale === 'en' ? '#ededf0' : '#50505a',
+            textDecoration: 'none',
+            transition: 'color .3s',
+          }}
+        >
+          EN
+        </Link>
       </span>
     </div>
   );

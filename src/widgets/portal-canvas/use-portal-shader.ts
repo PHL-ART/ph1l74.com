@@ -120,9 +120,6 @@ const FRAGMENT_SHADER = /* glsl */ `
     float vig = smoothstep(1.3, 0.3, distance(uv, vec2(0.5)));
     col *= 0.5 + 0.5 * vig;
 
-    float g = fract(sin(dot(gl_FragCoord.xy + floor(uTime * 24.0), vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
-    col += g * 0.05;
-
     gl_FragColor = vec4(col, 1.0);
   }
 `;

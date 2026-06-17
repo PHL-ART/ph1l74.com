@@ -38,11 +38,10 @@ export function MobileStack({ sections, active, translations, onSelect }: Mobile
           background: 'linear-gradient(to top, rgba(10,10,11,0.92), rgba(10,10,11,0))',
         }}
       >
-        {sections.map((section, i) => (
+        {sections.map((section) => (
           <MobileBlock
             key={section.id}
             section={section}
-            index={i}
             isActive={active === section.id}
             translation={translations[section.id]}
             onSelect={onSelect}

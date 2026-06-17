@@ -4,7 +4,6 @@ import type { PortalSection, SectionId } from '@/shared/config/portal.config';
 interface ZoneTranslation {
   alias: string;
   description: string;
-  enter: string;
 }
 
 interface ZoneItemProps {
@@ -48,7 +47,7 @@ export function ZoneItem({
         textDecoration: 'none',
         color: 'inherit',
         cursor: 'pointer',
-        borderRight: isLast ? 'none' : '1px solid #1a1a20',
+        borderRight: isLast ? 'none' : '1px solid rgba(255,255,255,0.08)',
         overflow: 'hidden',
         opacity: otherHovered ? 0.3 : 1,
         transition: `opacity .55s ${EASE}`,
@@ -145,7 +144,7 @@ export function ZoneItem({
             transition: 'color .4s, gap .4s',
           }}
         >
-          {translation.enter} →
+          {url.replace(/^https?:\/\//, '')} →
         </div>
       </div>
 
