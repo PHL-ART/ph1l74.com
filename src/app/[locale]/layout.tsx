@@ -1,5 +1,5 @@
 // src/app/[locale]/layout.tsx
-import { Space_Grotesk } from 'next/font/google';
+import { Space_Grotesk, Montserrat } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -10,6 +10,13 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   weight: ['400', '500', '700'],
   variable: '--font-space-grotesk',
+  display: 'swap',
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500'],
+  variable: '--font-montserrat',
   display: 'swap',
 });
 
@@ -67,7 +74,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       suppressHydrationWarning
-      className={spaceGrotesk.variable}
+      className={`${spaceGrotesk.variable} ${montserrat.variable}`}
     >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />

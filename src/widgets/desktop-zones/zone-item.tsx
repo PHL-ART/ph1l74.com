@@ -115,7 +115,7 @@ export function ZoneItem({
         {/* Description — reveals on hover */}
         <div
           style={{
-            ...GROTESK,
+            fontFamily: 'var(--font-montserrat), sans-serif',
             fontSize: 14,
             lineHeight: 1.5,
             color: '#a6a6ae',

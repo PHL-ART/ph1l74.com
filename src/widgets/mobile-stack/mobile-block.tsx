@@ -66,7 +66,7 @@ export function MobileBlock({ section, isActive, translation, onSelect }: Mobile
       {/* Description — reveals on select */}
       <div
         style={{
-          ...GROTESK,
+          fontFamily: 'var(--font-montserrat), sans-serif',
           fontSize: 13,
           lineHeight: 1.5,
           color: '#a6a6ae',
