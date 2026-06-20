@@ -41,7 +41,6 @@ export async function generateMetadata({
     openGraph: {
       type: 'website' as const,
       url: 'https://ph1l74.com',
-      images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
     },
     twitter: { card: 'summary_large_image' as const },
     icons: {
