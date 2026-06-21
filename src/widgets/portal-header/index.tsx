@@ -55,7 +55,8 @@ export function PortalHeader({ name }: PortalHeaderProps) {
         color: '#6a6a72',
         zIndex: 6,
         borderBottom: '1px solid rgba(255,255,255,0.08)',
-        pointerEvents: 'none',
+        pointerEvents: 'auto',
+        cursor: 'default',
       }}
     >
       {/* Left: brand with FA logo */}

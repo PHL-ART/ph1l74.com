@@ -142,6 +142,7 @@ export function ZoneItem({
             color: isHovered ? accent : '#65656d',
             marginTop: 24,
             transition: 'color .4s, gap .4s',
+            textDecoration: 'none',
           }}
         >
           {url.replace(/^https?:\/\//, '')} →
