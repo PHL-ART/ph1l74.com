@@ -8,7 +8,7 @@ services:
         NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID}
         NEXT_PUBLIC_YM_ID: ${NEXT_PUBLIC_YM_ID}
     container_name: ph1l74-com
-    restart: unless-stopped
+    restart: on-failure
         
     # Health check - УПРОЩЕННЫЙ для совместимости с Alpine
     healthcheck:
